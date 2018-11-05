@@ -3,8 +3,12 @@ import { Route, Switch } from "react-router-dom";
 import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
 import Loading from './components/Loading/Loading';
+import Auth from "./modules/Auth";
+import appConfig from './configuration.js';
+//import Login from './components/Login';
 
 const Landing = lazy(() => import('./components/Landing'));
+const Login   = lazy(() => import('./components/Login'));
 
 function WaitForComponent(Component, state) {
   return props => (
@@ -20,7 +24,50 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isLoggedIn: false,
+      currentUser: {},
+      redirectHome: false
+    };
+  }
+
+  async loginCurrentUser() {
+    try {  
+      let request = new Request(`${appConfig.apiBaseUrl}/dashboard`, {
+        method: 'GET',
+        headers: new Headers({
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let res = await fetch(request);
+      let response = res.json();
+      this.setState({
+        isLoggedIn  : true, 
+        currentUser : response.user
+      });
+      return response;
+    } catch (error) {
+      console.log('App.loginCurrentUser', error);
+    } 
+  }
+
+  logoutCurrentUser() {
+    Auth.deauthenticateUser();
+    this.setState({
+      redirectHome: true,
+      isLoggedIn: false,
+      currentUser: {}
+    });
+  }
+
+  componentDidMount() {
+    //Auth.deauthenticateUser();
+    if (Auth.isUserAuthenticated()) {
+      this.loginCurrentUser()
+      .then((res) => {
+        console.log(res);
+      });
+    }
   }
 
   render() {
@@ -28,6 +75,7 @@ class App extends React.Component {
       <div className="App">
         <main>
           <Switch>
+            <Route path="/login" exact component={WaitForComponent(Login, this.state)}/>
             <Route path="/" exact component={WaitForComponent(Landing, this.state)}/>
           </Switch>
         </main>
