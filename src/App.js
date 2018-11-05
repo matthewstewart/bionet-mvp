@@ -8,6 +8,7 @@ import appConfig from './configuration.js';
 import Navigation from './components/Navigation/Navigation';
 import Footer from './components/Footer/Footer';
 import Login from './components/Login';
+import Signup from './components/Signup';
 
 const Landing = lazy(() => import('./components/Landing'));
 
@@ -82,6 +83,7 @@ class App extends React.Component {
         <Navigation {...this.state} logoutCurrentUser={this.logoutCurrentUser}/>
         <main className="viewport-container">
           <Switch>
+            <Route path="/signup" exact render={(props) => (<Signup {...props} {...this.state}/>)}/>
             <Route path="/login" exact render={(props) => (<Login {...props} {...this.state} setCurrentUser={this.setCurrentUser}/>)}/>
             <Route path="/" exact component={WaitForComponent(Landing, this.state)}/>
           </Switch>
