@@ -1,1 +1,34 @@
-.App {}
+.App .viewport-container {
+  position: relative;
+	display: block;
+	margin: 0;
+	width: 100%;
+	min-height: calc(100vh - 60px - 60px);
+	background-color: rgb(122, 161, 172);
+	/* background-color: black; */
+}
+
+.card {
+  border-color: rgb(87, 104, 109);
+}
+
+p.card-text {
+	font-size: 1.2em;
+}
+
+.mdi-lg {
+	font-size: 1.2em;
+}
+
+.mdi-xl {
+	font-size: 1.1em;
+	margin-right: 10px;
+}
+
+.card-title span{
+	font-size: 1.75em;
+}
+
+button.dropdown-item:hover {
+	cursor: pointer;
+}

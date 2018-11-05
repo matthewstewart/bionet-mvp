@@ -41,11 +41,12 @@ class Login extends Component {
       if (xhr.status === 200) {
         //this.props.setAlert("success", "You have been succesfully logged in");
         Auth.authenticateUser(xhr.response.token);       
-        //this.props.loginCurrentUser();
+        this.props.setCurrentUser()
         this.setState({
           redirect: true,
           errors: {}
         });
+    
       } else {
         const errors = xhr.response.errors ? xhr.response.errors : {};
         errors.summary = xhr.response.message;

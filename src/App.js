@@ -6,15 +6,16 @@ import Loading from './components/Loading/Loading';
 import Auth from "./modules/Auth";
 import appConfig from './configuration.js';
 import Navigation from './components/Navigation/Navigation';
+import Footer from './components/Footer/Footer';
+import Login from './components/Login';
 
 const Landing = lazy(() => import('./components/Landing'));
-const Login   = lazy(() => import('./components/Login'));
 
-function WaitForComponent(Component, state) {
+function WaitForComponent(Component, state, loginMethod) {
   return props => (
     <ErrorBoundary>
       <Suspense fallback={<div><Loading /></div>}>
-        <Component {...state}/>
+        <Component {...state} {...props} loginCurrentUser={loginMethod}/>
       </Suspense>
     </ErrorBoundary>
   );
@@ -26,13 +27,28 @@ class App extends React.Component {
     super(props);
     this.state = {
       isLoggedIn: false,
-      currentUser: {},
-      redirectHome: false
+      currentUser: {}
     };
+    this.loginCurrentUser = this.loginCurrentUser.bind(this);
+    this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
+    this.setCurrentUser = this.setCurrentUser.bind(this);
+  }
+
+  setCurrentUser() {
+    //Auth.deauthenticateUser();
+    if (Auth.isUserAuthenticated()) {
+      this.loginCurrentUser().then((res) => {
+        this.setState({
+          isLoggedIn: true,
+          currentUser: res.user
+        });
+      });
+    }   
   }
 
   async loginCurrentUser() {
     try {  
+      console.log('loginCurrentUser called');
       let request = new Request(`${appConfig.apiBaseUrl}/dashboard`, {
         method: 'GET',
         headers: new Headers({
@@ -57,31 +73,20 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    //Auth.deauthenticateUser();
-    if (Auth.isUserAuthenticated()) {
-      this.loginCurrentUser()
-      .then((res) => {
-        this.setState({
-          isLoggedIn  : true, 
-          currentUser : res.user
-        });
-      });
-    }
+    this.setCurrentUser();
   }
 
   render() {
     return (
       <div className="App">
-        <Navigation 
-          {...this.state} 
-          logoutCurrentUser={this.logoutCurrentUser} 
-        />
-        <main>
+        <Navigation {...this.state} logoutCurrentUser={this.logoutCurrentUser}/>
+        <main className="viewport-container">
           <Switch>
-            <Route path="/login" exact component={WaitForComponent(Login, this.state)}/>
+            <Route path="/login" exact render={(props) => (<Login {...props} {...this.state} setCurrentUser={this.setCurrentUser}/>)}/>
             <Route path="/" exact component={WaitForComponent(Landing, this.state)}/>
           </Switch>
         </main>
+        <Footer />
       </div>
     );
   }
