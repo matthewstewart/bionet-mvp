@@ -5,7 +5,7 @@ import './App.css';
 import Loading from './components/Loading/Loading';
 import Auth from "./modules/Auth";
 import appConfig from './configuration.js';
-//import Login from './components/Login';
+import Navigation from './components/Navigation/Navigation';
 
 const Landing = lazy(() => import('./components/Landing'));
 const Login   = lazy(() => import('./components/Login'));
@@ -41,10 +41,6 @@ class App extends React.Component {
       });
       let res = await fetch(request);
       let response = res.json();
-      this.setState({
-        isLoggedIn  : true, 
-        currentUser : response.user
-      });
       return response;
     } catch (error) {
       console.log('App.loginCurrentUser', error);
@@ -65,7 +61,10 @@ class App extends React.Component {
     if (Auth.isUserAuthenticated()) {
       this.loginCurrentUser()
       .then((res) => {
-        console.log(res);
+        this.setState({
+          isLoggedIn  : true, 
+          currentUser : res.user
+        });
       });
     }
   }
@@ -73,6 +72,10 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+        <Navigation 
+          {...this.state} 
+          logoutCurrentUser={this.logoutCurrentUser} 
+        />
         <main>
           <Switch>
             <Route path="/login" exact component={WaitForComponent(Login, this.state)}/>

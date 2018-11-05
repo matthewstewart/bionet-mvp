@@ -12,7 +12,7 @@ class Landing extends React.Component {
   render() {
     return (
       <div className="Landing">
-        Is Logged In {this.props.isLoggedIn ? "true" : "false"}
+        Is Logged In? {this.props.isLoggedIn ? JSON.stringify(this.props.currentUser) : "false"}
       </div>
     );
   }

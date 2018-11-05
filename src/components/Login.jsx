@@ -41,7 +41,7 @@ class Login extends Component {
       if (xhr.status === 200) {
         //this.props.setAlert("success", "You have been succesfully logged in");
         Auth.authenticateUser(xhr.response.token);       
-        this.props.loginCurrentUser();
+        //this.props.loginCurrentUser();
         this.setState({
           redirect: true,
           errors: {}
@@ -68,8 +68,7 @@ class Login extends Component {
   }
 
   render() {
-    if(this.state.redirect && Object.keys(this.props.currentUser).length > 0){ 
-      console.log('this.props.currentUser', this.props.currentUser);
+    if(this.state.redirect){ 
       console.log(`Redirecting to /`);
       return( <Redirect to={`/`} /> ) 
     }
