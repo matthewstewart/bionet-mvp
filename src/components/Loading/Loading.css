@@ -1,0 +1,12 @@
+.Loader {
+  width: 100%;
+  text-align: center;
+}
+
+.loader-title {
+  margin-top: 15px;
+}
+
+.preLoader {
+  transform: rotate(90deg);
+}
