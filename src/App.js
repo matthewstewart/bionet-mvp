@@ -13,6 +13,7 @@ import Signup from './components/Signup';
 
 const Landing = lazy(() => import('./components/Landing'));
 const LabProfile = lazy(() => import('./components/Lab/LabProfile'));
+const LabNew = lazy(() => import('./components/Lab/LabNew'));
 
 function WaitForComponent(Component, state, refreshMethod) {
   return props => (
@@ -151,6 +152,7 @@ class App extends React.Component {
         <main className="viewport-container">
 
           <Switch>
+            <Route path="/labs/new" exact component={WaitForComponent(LabNew, this.state, this.getCurrentUserLabs)}/>
             <Route path="/labs/:labId" component={WaitForComponent(LabProfile, this.state, this.getCurrentUserLabs)}/>
           </Switch>  
 
