@@ -1,11 +1,25 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import shortid from 'shortid';
 import logo from './images/bionet-logo.png';
 
 class Navigation extends Component {
 
   render() {
     let pathName = this.props.location.pathname;
+    const isLoggedIn = this.props.isLoggedIn;
+    const currentUser = this.props.currentUser;
+    const labsJoined = isLoggedIn ? currentUser.labs.map((lab, index) => {
+      return (
+        <Link 
+          key={shortid.generate()}
+          className="dropdown-item"
+          to={`/labs/${lab._id}`}
+        >
+          <i className="mdi mdi-teach mr-2"/>{lab.name}
+        </Link>
+      )
+    }) : [];
     return (
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <Link className="navbar-brand" to="/">
@@ -44,7 +58,9 @@ class Navigation extends Component {
                 {this.props.currentUser.username}
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <Link className="dropdown-item" to="/actions/list/labs">List Labs</Link>
+                <h6 className="dropdown-header">Labs</h6>
+                <div className="dropdown-divider"></div>
+                {labsJoined}
               </div>
             </li>
             ) : null }
