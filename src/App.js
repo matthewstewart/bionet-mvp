@@ -12,6 +12,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 
 const Landing = lazy(() => import('./components/Landing'));
+const LabProfile = lazy(() => import('./components/Lab/LabProfile'));
 
 function WaitForComponent(Component, state, loginMethod) {
   return props => (
@@ -148,11 +149,17 @@ class App extends React.Component {
       <div className="App">
         <Navigation {...this.state} logoutCurrentUser={this.logoutCurrentUser}/>
         <main className="viewport-container">
+
+          <Switch>
+            <Route path="/labs/:labId" component={WaitForComponent(LabProfile, this.state)}/>
+          </Switch>  
+
           <Switch>
             <Route path="/signup" exact render={(props) => (<Signup {...props} {...this.state}/>)}/>
             <Route path="/login" exact render={(props) => (<Login {...props} {...this.state} setCurrentUser={this.setCurrentUser}/>)}/>
             <Route path="/" exact component={WaitForComponent(Landing, this.state)}/>
           </Switch>
+
         </main>
         <Footer />
       </div>
