@@ -4,9 +4,8 @@ import { Link, Redirect } from 'react-router-dom';
 // import appConfig from '../../configuration.js';
 //import axios from 'axios';
 import { generateRandomName } from '../../modules/Wu';
-import GridSmall from '../Grid/GridSmall';
 
-class ContainerNewForm extends Component {
+class PhysicalNewForm extends Component {
   
   constructor(props) {
     super(props);
@@ -99,7 +98,7 @@ class ContainerNewForm extends Component {
                   className="form-control"
                   id="form-name"
                   name="name" 
-                  placeholder="Container Name"
+                  placeholder="Physical Name"
                   value={this.state.form.name}
                   onChange={this.updateField}
                 />
@@ -128,7 +127,7 @@ class ContainerNewForm extends Component {
                 type="textarea"
                 className="form-control"
                 name="description"
-                placeholder="A short description of the Container."
+                placeholder="A short description of the Physical."
                 value={this.state.form.description}
                 onChange={this.updateField}
               ></textarea>
@@ -142,60 +141,22 @@ class ContainerNewForm extends Component {
                 value={this.state.form.category}
                 onChange={this.updateField}
               >
-                <option value="General">General</option>
-                <option value="Freezer">Freezer</option>
-                <option value="Plate">Plate</option>
+                <option value="Sample">Sample</option>
+                <option value="DNA Sample">DNA Sample</option>
+                <option value="OrganismSample">Organism Sample</option>
               </select>
-            </div>            
-            <div className="row">
-              <div className="col">
-                <label htmlFor="columns">Columns</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="columns"
-                  min="1"
-                  max="50"
-                  step="1"
-                  value={this.state.form.columns}
-                  onChange={this.updateField}
-                />
-              </div>
-              <div className="col">
-                <label htmlFor="rows">Rows</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="rows"
-                  min="1"
-                  max="50"
-                  step="1"
-                  value={this.state.form.rows}
-                  onChange={this.updateField}
-                />
-              </div>  
             </div>
             <div className="form-group text-center">
               <div className="btn-group">
                 <Link to={`/labs/${this.props.match.params.labId}`} className="btn btn-secondary mt-5">Cancel</Link>
-                <button type="submit" className="btn btn-success mt-5">Save Container</button>
+                <button type="submit" className="btn btn-success mt-5">Save Physical</button>
               </div>
             </div>
           </form>
         </div>
         <div className="col-12 col-lg-6">
           <div className="form-group">
-            {(this.state.form.name.length > 0) ? (
-              <label>{this.state.form.name} Preview</label>
-            ) : (
-              <label>Container Preview</label>
-            )}
-            <GridSmall
-              demo={true}
-              selectLocations={false}
-              recordType="Container"
-              record={this.state.form}
-            />
+            <label>Suggestions</label>
           </div>
         </div>
       </div>    
@@ -203,4 +164,4 @@ class ContainerNewForm extends Component {
   }
 }
 
-export default ContainerNewForm;
+export default PhysicalNewForm;

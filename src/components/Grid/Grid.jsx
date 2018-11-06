@@ -19,11 +19,21 @@ class Grid extends Component {
     //console.log('clicked location', location);
     let isSelected = e.target.getAttribute('isselected') === 'true';
     console.log(`${col},${row} isselected`, isSelected);
-    if (isSelected) {
-      this.props.removeLocation(location);
+    let isSingleCellSelectMode = this.props.selectSingle === true;
+    let newLocationsFull = isSingleCellSelectMode && this.props.newItemLocations.length === 1;
+    if (isSingleCellSelectMode) {
+      if (isSelected) {
+        this.props.removeLocation(location);
+      } else if (!newLocationsFull) {
+        this.props.addLocation(location);
+      }
     } else {
-      this.props.addLocation(location);
-    }
+      if (isSelected) {
+        this.props.removeLocation(location);
+      } else {
+        this.props.addLocation(location);
+      }      
+    }  
     // if (isSelected === 'false') {
     //   this.props.removeLocation(location);
     // } else {

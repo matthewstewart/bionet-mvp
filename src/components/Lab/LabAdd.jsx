@@ -5,6 +5,7 @@ import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import ContainerNewForm from '../Container/ContainerNewForm';
+import PhysicalNewForm from '../Physical/PhysicalNewForm';
 import './LabProfile.css';
 
 class LabAdd extends React.Component {
@@ -169,9 +170,15 @@ class LabAdd extends React.Component {
                   </div>
                   {(this.state.newItemLocations.length === 0) ? (
                     <div className="card-body">
-                      <p className="card-text">
-                        Select one or more cells for the <span className="text-capitalize">{itemType}</span> to occupy within {this.state.lab.name}.
-                      </p>       
+                      {(itemType === 'container') ? (
+                        <p className="card-text">
+                          Select one or more cells for the Container to occupy within {this.state.lab.name}.
+                        </p>
+                      ) : (
+                        <p className="card-text">
+                          Select which cell the Physical Sample will occupy within {this.state.lab.name}.
+                        </p>
+                      )}    
                     </div>
                   ) : (
                     <div className="card-body">
@@ -181,7 +188,12 @@ class LabAdd extends React.Component {
                           {...this.state}
                         />
                       ) : null } 
-                      {(itemType === 'physical') ? (<div>Physical Form</div>) : null }      
+                      {(itemType === 'physical') ? (
+                        <PhysicalNewForm 
+                          {...this.props} 
+                          {...this.state}
+                        />
+                      ) : null }     
                     </div>
                   )} 
                 </div>
@@ -190,6 +202,7 @@ class LabAdd extends React.Component {
                 <Grid 
                   demo={false}
                   selectLocations={true}
+                  selectSingle={itemType === 'physical'}
                   newItemLocations={this.state.newItemLocations}
                   addLocation={this.addLocation}
                   removeLocation={this.removeLocation}
