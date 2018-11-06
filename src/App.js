@@ -33,7 +33,8 @@ class App extends React.Component {
     this.state = {
       isLoggedIn: false,
       currentUser: {},
-      labs: []
+      labs: [],
+      virtuals: []
     };
     this.loginCurrentUser = this.loginCurrentUser.bind(this);
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
@@ -73,11 +74,17 @@ class App extends React.Component {
           currentUser.labsToJoin.push(lab);
         }
       }
-      this.setState({
-        isLoggedIn: true,
-        currentUser,
-        labs
-      });
+      this.getVirtuals()
+      .then((res) => {
+        //console.log('getVirtuals.res', res);
+        let virtuals = res.data;
+        this.setState({
+          isLoggedIn: true,
+          currentUser,
+          labs,
+          virtuals
+        });
+      })
     });
   }
 
@@ -97,21 +104,30 @@ class App extends React.Component {
     }   
   }
 
+  async getVirtuals() {
+    try {  
+      let virtualsRequest = new Request(`${appConfig.apiBaseUrl}/virtuals`, {
+        method: 'GET',
+        headers: new Headers({
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let virtualRes = await fetch(virtualsRequest);
+      let virtualsResponse = virtualRes.json();
+      return virtualsResponse;
+    } catch (error) {
+      console.log('App.getVirtuals', error);
+    }   
+  }
+
   setCurrentUser() {
     //Auth.deauthenticateUser();
     if (Auth.isUserAuthenticated()) {
       this.loginCurrentUser()
       .then((res) => {
-        //console.log('setCurrentUser.res', res);
         let currentUser = res.user;
         currentUser['gravatarUrl'] = `https://www.gravatar.com/avatar/${Crypto.MD5(currentUser.email).toString()}?s=100`;
-        //console.log('currentUser: ', currentUser)
         this.getCurrentUserLabs(currentUser);
-        // this.setState({
-        //   isLoggedIn: true,
-        //   currentUser
-        // });
-        // return currentUser;
       });
     }   
   }

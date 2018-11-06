@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import shortid from 'shortid';
+import Search from './Search/Search';
 
 class Landing extends React.Component {
 
@@ -51,7 +52,7 @@ class Landing extends React.Component {
       <div className="Landing container-fluid">
         
         <div className="row">
-          <div className="col-12 col-lg-6">
+          <div className="col-12 col-lg-7">
             {(isLoggedIn) ? (
               <div className="card rounded-0 mt-3 mb-3">
                 <div className="card-header rounded-0 bg-dark text-light">
@@ -127,6 +128,9 @@ class Landing extends React.Component {
                 </div>
               </div>
             )}
+          </div>
+          <div className="col-12 col-lg-5">
+            <Search {...this.state} {...this.props}/>
           </div>
         </div>
       </div>
