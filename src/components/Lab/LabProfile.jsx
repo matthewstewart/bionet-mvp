@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import shortid from 'shortid';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
@@ -200,7 +201,32 @@ class LabProfile extends React.Component {
         if (userLab._id === lab._id) { userIsRequestingMembership = true; }
       }
     }
-
+    const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
+      return (
+        <div 
+          key={shortid.generate()}
+          className="join-request d-block"
+        >
+          <span className="float-left"><i className="mdi mdi-account mr-2"/>{user.username}</span>
+          <div className="btn-group float-right ml-2">
+            <button 
+              className="btn btn-sm btn-success"
+              userid={user._id}
+              onClick={this.onAcceptRequestLabMembership}
+            >
+              <i className="mdi mdi-account-check mr-2" />Approve
+            </button>
+            <button 
+              className="btn btn-sm btn-danger"
+              userid={user._id}
+              onClick={this.onDenyRequestLabMembership}
+            >
+              <i className="mdi mdi-account-minus mr-2" />Deny
+            </button>
+          </div>
+        </div>
+      )
+    }) : [];
     return (
       <div className="LabProfile container-fluid">
         
@@ -284,7 +310,7 @@ class LabProfile extends React.Component {
                             </button>
                           </div>
 
-                        </div>                         
+                        </div>                       
                       </>
                     ) : null }
                     {(!userIsMember && !userIsRequestingMembership) ? (
@@ -324,7 +350,13 @@ class LabProfile extends React.Component {
                   <div className="card-body">
                     <p className="card-text">
                       {lab.description}
-                    </p>  
+                    </p>
+                    {(userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
+                      <>
+                      <h5>Membership Requests</h5> 
+                      {membershipRequests}
+                      </>
+                    ) : null }
                   </div>
                 </>
               ) : null}   

@@ -33,4 +33,6 @@ button.dropdown-item:hover {
 	cursor: pointer;
 }
 
-.user-img {}
+.join-request span {
+	font-size: 1.3em;
+}
