@@ -15,6 +15,7 @@ const Landing = lazy(() => import('./components/Landing'));
 const LabProfile = lazy(() => import('./components/Lab/LabProfile'));
 const LabNew = lazy(() => import('./components/Lab/LabNew'));
 const LabAdd = lazy(() => import('./components/Lab/LabAdd'));
+const LabEdit = lazy(() => import('./components/Lab/LabEdit'));
 
 function WaitForComponent(Component, state, refreshMethod) {
   return props => (
@@ -180,6 +181,7 @@ class App extends React.Component {
           <Switch>
             <Route path="/labs/new" exact component={WaitForComponent(LabNew, this.state, this.getCurrentUserLabs)}/>
             <Route path='/labs/:labId/add/:itemType' component={WaitForComponent(LabAdd, this.state, this.getCurrentUserLabs)}/>
+            <Route path='/labs/:labId/edit' component={WaitForComponent(LabEdit, this.state, this.getCurrentUserLabs)}/>
             <Route path="/labs/:labId" component={WaitForComponent(LabProfile, this.state, this.getCurrentUserLabs)}/>
           </Switch>  
 

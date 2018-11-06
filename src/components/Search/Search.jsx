@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import shortid from 'shortid';
+//import { Link } from 'react-router-dom';
+//import shortid from 'shortid';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
@@ -23,8 +23,8 @@ class Search extends React.Component {
   }
 
   render() {
-    const isLoggedIn = this.props.isLoggedIn;
-    const currentUser = this.props.currentUser;
+    //const isLoggedIn = this.props.isLoggedIn;
+    //const currentUser = this.props.currentUser;
     const virtuals = this.props.virtuals;
     const virtualIsSelected = this.state.selected && Object.keys(this.state.selected).length > 0;
     const virtualSelected = this.state.selected;
@@ -50,7 +50,7 @@ class Search extends React.Component {
                 maxResults={50}
               />
               <div className="input-group-append">
-                <button className="btn btn-info rounded-0" type="button" id="search-submit">Search</button>
+                <button className="btn btn-info rounded-0" type="button" id="search-submit" disabled={true}>Search</button>
               </div>
             </div>
           </form>
@@ -88,7 +88,7 @@ class Search extends React.Component {
 
 export default Search;
 
-function range(start, end) {
-  if(start === end) return [start];
-  return [start, ...range(start + 1, end)];
-}
+// function range(start, end) {
+//   if(start === end) return [start];
+//   return [start, ...range(start + 1, end)];
+// }
