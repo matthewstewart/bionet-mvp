@@ -63,7 +63,7 @@ class LabAdd extends React.Component {
     let labId = this.props.match.params.labId;
     this.getLab(labId)
     .then((res) => {
-      console.log('getData.res', res);
+      //console.log('getData.res', res);
       this.setState({
         lab: res.data,
         containers: res.children
@@ -81,7 +81,7 @@ class LabAdd extends React.Component {
   }
 
   addLocation(newLocationArray) {
-    console.log('add location called');
+    //console.log('add location called');
     let locations = this.state.newItemLocations;
     let locationExists = false;
     for(let i = 0; i < locations.length; i++){

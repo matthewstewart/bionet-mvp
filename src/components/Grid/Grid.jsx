@@ -18,7 +18,7 @@ class Grid extends Component {
     let location = [col,row];
     //console.log('clicked location', location);
     let isSelected = e.target.getAttribute('isselected') === 'true';
-    console.log(`${col},${row} isselected`, isSelected);
+    //console.log(`${col},${row} isselected`, isSelected);
     let isSingleCellSelectMode = this.props.selectSingle === true;
     let newLocationsFull = isSingleCellSelectMode && this.props.newItemLocations.length === 1;
     if (isSingleCellSelectMode) {

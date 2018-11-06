@@ -98,10 +98,10 @@ class LabEdit extends React.Component {
     this.postUpdateLab(formData)
     .then((res) => {
       console.log(res);
-      //this.props.refresh(this.props.currentUser);
       this.setState({
         redirect: true
       });
+      this.props.refresh(this.props.currentUser);
     });
   }
 

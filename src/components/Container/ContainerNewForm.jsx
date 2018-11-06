@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-// import Auth from '../../modules/Auth';
-// import appConfig from '../../configuration.js';
-//import axios from 'axios';
+import Auth from '../../modules/Auth';
+import appConfig from '../../configuration.js';
 import { generateRandomName } from '../../modules/Wu';
 import GridSmall from '../Grid/GridSmall';
 
@@ -15,7 +14,7 @@ class ContainerNewForm extends Component {
       form: {
         creator: this.props.currentUser._id || "",
         lab: this.props.lab._id || "",
-        parent: this.props.parentId || null,
+        parent: props.match.params.labId,
         name: "",
         description: "",
         rows: 1,
@@ -25,10 +24,30 @@ class ContainerNewForm extends Component {
         locations: []
       }
     };
+    this.postContainerNew = this.postContainerNew.bind(this);
     this.updateField = this.updateField.bind(this);
     this.wuGenerate = this.wuGenerate.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.submitForm = this.submitForm.bind(this);
+  }
+
+  async postContainerNew(formData) {
+    try {  
+      let containerRequest = new Request(`${appConfig.apiBaseUrl}/containers/new`, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let containerRes = await fetch(containerRequest);
+      let containerResponse = containerRes.json();
+      return containerResponse;
+    } catch (error) {
+      console.log('ContainerNewForm.postContainerNew', error);
+    }   
   }
 
   updateField(e) {
@@ -59,28 +78,19 @@ class ContainerNewForm extends Component {
     let formData = this.state.form;
     //console.log(formData);
     formData.locations = this.props.newItemLocations;
-    console.log(formData);
+    //console.log(formData);
     this.submitForm(formData);
   }
 
   submitForm(formData) {
-    // let config = {
-    //   'headers': {
-    //     'authorization': `Bearer ${Auth.getToken()}`
-    //   },
-    //   'json': true
-    // };  
-    // axios.post(`${appConfig.apiBaseUrl}/containers/new`, formData, config)
-    // .then(res => {
-    //   console.log('Response:', res.data); 
-    //   this.setState({ 
-    //     redirect: true 
-    //   });
-    // })
-    // .catch(error => {
-    //   console.error(error);
-    //   this.setState({ form: formData });
-    // }); 
+    this.postContainerNew(formData)
+    .then((res) => {
+      //console.log(res);
+      this.setState({
+        redirect: true
+      });
+      this.props.refresh(this.props.currentUser);
+    });
   }
 
   render() { 
