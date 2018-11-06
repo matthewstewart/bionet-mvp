@@ -129,7 +129,16 @@ class App extends React.Component {
         currentUser['gravatarUrl'] = `https://www.gravatar.com/avatar/${Crypto.MD5(currentUser.email).toString()}?s=100`;
         this.getCurrentUserLabs(currentUser);
       });
-    }   
+    } else {
+      this.getVirtuals()
+      .then((res) => {
+        //console.log('getVirtuals.res', res);
+        let virtuals = res.data;
+        this.setState({
+          virtuals
+        });
+      });  
+    }  
   }
 
   async loginCurrentUser() {
