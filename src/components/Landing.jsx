@@ -73,7 +73,7 @@ class Landing extends React.Component {
                 </div>
 
                 <div className="card-header rounded-0 bg-dark text-light">
-                  <h5 className="card-title mb-0 text-capitalize">Your {currentUser.labs.length === 1 ? "Lab" : "Labs"}</h5>
+                  <h5 className="card-title mb-0 text-capitalize">Your {currentUser.labs.length === 1 ? "Lab" : "Labs"} ({currentUser.labs.length})</h5>
                 </div>                  
                 <ul className="list-group list-group-flush">
                   {labsJoined}
@@ -86,18 +86,35 @@ class Landing extends React.Component {
                 </ul>
 
                 <div className="card-header rounded-0 bg-dark text-light">
-                  <h5 className="card-title mb-0 text-capitalize">Pending Lab {currentUser.labsRequested.length === 1 ? "Request" : "Requests"}</h5>
-                </div>                  
-                <ul className="list-group list-group-flush">
-                  {labsRequested}
-                </ul>
+                  <h5 className="card-title mb-0 text-capitalize">Pending Lab {currentUser.labsRequested.length === 1 ? "Request" : "Requests"} ({currentUser.labsRequested.length})</h5>
+                </div>
+                {(currentUser.labsRequested.length > 0) ? (
+                  <ul className="list-group list-group-flush">
+                    {labsRequested}
+                  </ul>
+                ) : (
+                  <div className="card-body">
+                    <p className="card-text">
+                      You currently have no pending lab membership requests. Try requesting membership from one of the labs listed below.
+                    </p>
+                  </div>
+                )}          
+
 
                 <div className="card-header rounded-0 bg-dark text-light">
-                  <h5 className="card-title mb-0 text-capitalize">Other Labs</h5>
-                </div>                  
-                <ul className="list-group list-group-flush">
-                  {labsToJoin}
-                </ul>
+                  <h5 className="card-title mb-0 text-capitalize">Other Labs ({labsToJoin.length})</h5>
+                </div>
+                {(labsToJoin.length > 0) ? (
+                  <ul className="list-group list-group-flush">
+                    {labsToJoin}
+                  </ul>
+                ) : (
+                  <div className="card-body">
+                    <p className="card-text">
+                      There are currently no other labs listed to join.
+                    </p>
+                  </div>
+                )}                  
               
               </div>
             ) : (
