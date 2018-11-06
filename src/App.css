@@ -36,3 +36,8 @@ button.dropdown-item:hover {
 .join-request span {
 	font-size: 1.3em;
 }
+
+.rbt-input,
+.rbt-menu.dropdown-menu {
+	border-radius: 0px;
+}
