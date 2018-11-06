@@ -104,7 +104,6 @@ class LabNew extends React.Component {
 
   render() {
     const isLoggedIn = this.props.isLoggedIn;
-    const currentUser = this.props.currentUser;
     let form = this.state.form;
     let formValid = form.name.length > 0 && form.rows > 1 && form.columns > 1;
     if (this.state.redirect === true) {
