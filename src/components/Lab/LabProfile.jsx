@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
+import Grid from '../Grid/Grid';
 import './LabProfile.css';
 
 class LabProfile extends React.Component {
@@ -204,7 +205,7 @@ class LabProfile extends React.Component {
       <div className="LabProfile container-fluid">
         
         <div className="row">
-          <div className="col-12 col-lg-6">
+          <div className="col-12 col-lg-7">
             <div className="card rounded-0 mt-3">
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
@@ -329,6 +330,17 @@ class LabProfile extends React.Component {
               ) : null}   
             </div>
           </div>
+          {(isLoggedIn) ? (
+            <div className="col-12 col-lg-5">
+              <Grid 
+                demo={false}
+                selectLocations={false}
+                recordType="Lab"
+                record={this.state.lab}
+                containers={this.state.containers}
+              />
+            </div>
+          ) : null }
         </div>
       </div>
     );

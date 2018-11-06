@@ -154,7 +154,7 @@ class Grid extends Component {
       <div className="card rounded-0 mt-3">
         <div className="card-header bg-dark text-light rounded-0">
           <h4 className="card-title mb-0 text-capitalize">
-            {this.props.record.name.length > 0 ? this.props.record.name : (this.props.demo ? `(Select A ${this.props.recordType} Name)` : "Loading...")}
+            {this.props.demo ? `(Select A ${this.props.recordType} Name)` : this.props.record.name}
           </h4>
         </div>
         <div className="card-body">
