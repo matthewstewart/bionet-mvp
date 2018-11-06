@@ -67,8 +67,7 @@ class Landing extends React.Component {
                   />
                   <div className="d-block float-left ml-3">
                     <p className="card-text">
-                      You Currently:<br/>
-                      Belong to {currentUser.labs.length} {currentUser.labs.length === 1 ? "Lab" : "Labs"}
+                      You currently belong to {currentUser.labs.length} {currentUser.labs.length === 1 ? "Lab" : "Labs"}.
                     </p>  
                   </div>
                 </div>

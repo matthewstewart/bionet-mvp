@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
-import shortid from 'shortid';
 import './LabProfile.css';
 
 class LabProfile extends React.Component {
@@ -14,7 +13,14 @@ class LabProfile extends React.Component {
       containers: []
     };
     this.getLab = this.getLab.bind(this);
+    this.postLab = this.postLab.bind(this);
     this.getData = this.getData.bind(this);
+    this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
+    this.onCancelRequestLabMembership = this.onCancelRequestLabMembership.bind(this);
+    this.onAcceptRequestLabMembership = this.onAcceptRequestLabMembership.bind(this);
+    this.onDenyRequestLabMembership = this.onDenyRequestLabMembership.bind(this);
+    this.onRevokeLabMembership = this.onRevokeLabMembership.bind(this);
+    this.updateLab = this.updateLab.bind(this);
   }
 
   async getLab(labId) {
@@ -33,6 +39,26 @@ class LabProfile extends React.Component {
     }  
   }
 
+  async postLab(lab) {
+    try {  
+      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${lab._id}/membership`, {
+        method: 'POST',
+        //mode: "cors",
+        body: JSON.stringify(lab),
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let labRes = await fetch(labRequest);
+      let labResponse = labRes.json();
+      return labResponse;
+    } catch (error) {
+      console.log('LabProfile.postLab', error);
+    }   
+  }
+
   getData() {
     let labId = this.props.match.params.labId;
     this.getLab(labId)
@@ -42,6 +68,114 @@ class LabProfile extends React.Component {
         lab: res.data,
         containers: res.children
       });
+    });
+  }
+
+  onRequestLabMembership(e) {
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      joinRequests.push(request._id);
+    };
+    joinRequests.push(this.props.currentUser._id);
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    //console.log(lab);
+    this.updateLab(lab);
+  }
+
+  onCancelRequestLabMembership(e) {
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      if (this.props.currentUser._id !== request._id){
+        joinRequests.push(request._id);
+      }
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    console.log('LabProfile.onCancelRequestLabMembership.lab', lab);
+    this.updateLab(lab);
+  }
+
+  onAcceptRequestLabMembership(e) {
+    let acceptedRequestId = e.target.getAttribute('userid');
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    users.push(acceptedRequestId);
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      if (acceptedRequestId !== request._id){
+        joinRequests.push(request._id);
+      }
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab);
+  }
+
+  onDenyRequestLabMembership(e) {
+    let deniedRequestId = e.target.getAttribute('userid');
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      if (deniedRequestId !== request._id){
+        joinRequests.push(request._id);
+      }
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab);
+  }
+
+  onRevokeLabMembership(e) {
+    let lab = this.state.lab;
+    let users = [];
+    let joinRequests = [];
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      if (user._id !== this.props.currentUser._id){
+        users.push(user._id);
+      }  
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      joinRequests.push(request._id);
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab);    
+  }
+  
+  updateLab(lab) {
+    this.postLab(lab)
+    .then((res) => {
+      console.log(res);
+      this.getData();
+      this.props.refresh(this.props.currentUser);
     });
   }
 

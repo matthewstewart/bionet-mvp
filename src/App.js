@@ -14,11 +14,11 @@ import Signup from './components/Signup';
 const Landing = lazy(() => import('./components/Landing'));
 const LabProfile = lazy(() => import('./components/Lab/LabProfile'));
 
-function WaitForComponent(Component, state, loginMethod) {
+function WaitForComponent(Component, state, refreshMethod) {
   return props => (
     <ErrorBoundary>
       <Suspense fallback={<div><Loading /></div>}>
-        <Component {...state} {...props} loginCurrentUser={loginMethod}/>
+        <Component {...state} {...props} refresh={refreshMethod}/>
       </Suspense>
     </ErrorBoundary>
   );
@@ -151,7 +151,7 @@ class App extends React.Component {
         <main className="viewport-container">
 
           <Switch>
-            <Route path="/labs/:labId" component={WaitForComponent(LabProfile, this.state)}/>
+            <Route path="/labs/:labId" component={WaitForComponent(LabProfile, this.state, this.getCurrentUserLabs)}/>
           </Switch>  
 
           <Switch>
