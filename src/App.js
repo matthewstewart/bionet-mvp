@@ -35,7 +35,8 @@ class App extends React.Component {
       isLoggedIn: false,
       currentUser: {},
       labs: [],
-      virtuals: []
+      virtuals: [],
+      physicals: []
     };
     this.loginCurrentUser = this.loginCurrentUser.bind(this);
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
@@ -79,12 +80,16 @@ class App extends React.Component {
       .then((res) => {
         //console.log('getVirtuals.res', res);
         let virtuals = res.data;
-        this.setState({
-          isLoggedIn: true,
-          currentUser,
-          labs,
-          virtuals
-        });
+        this.getPhysicals()
+        .then((res) => {
+          this.setState({
+            isLoggedIn: true,
+            currentUser,
+            labs,
+            virtuals,
+            physicals: res.data
+          });
+        });  
       })
     });
   }
@@ -121,6 +126,22 @@ class App extends React.Component {
     }   
   }
 
+  async getPhysicals() {
+    try {  
+      let physicalsRequest = new Request(`${appConfig.apiBaseUrl}/physicals`, {
+        method: 'GET',
+        headers: new Headers({
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let physicalRes = await fetch(physicalsRequest);
+      let physicalsResponse = physicalRes.json();
+      return physicalsResponse;
+    } catch (error) {
+      console.log('App.getVirtuals', error);
+    }   
+  }
+
   setCurrentUser() {
     //Auth.deauthenticateUser();
     if (Auth.isUserAuthenticated()) {
@@ -135,9 +156,13 @@ class App extends React.Component {
       .then((res) => {
         //console.log('getVirtuals.res', res);
         let virtuals = res.data;
-        this.setState({
-          virtuals
-        });
+        this.getPhysicals()
+        .then((res) => {
+          this.setState({
+            virtuals,
+            physicals: res.data
+          });
+        });  
       });  
     }  
   }

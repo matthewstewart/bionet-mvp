@@ -289,14 +289,8 @@ class Grid extends Component {
             {this.props.record.name || `(Select A ${this.props.recordType} Name)`}
           </h4>
         </div>
-        {/* <div className="card-body">
-          <div className="grid-container dropdown" style={gridContainerStyles}>
-            {gridContainerChildren}
-          </div>
-        </div> */}
         <div className="card-body">
-          <GridContainer containers={this.props.containers} record={this.props.record} />
-          
+          <GridContainer containers={this.props.containers} record={this.props.record} {...this.props}/>       
         </div>
       </div>
     );

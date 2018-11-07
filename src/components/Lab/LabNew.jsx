@@ -212,6 +212,7 @@ class LabNew extends React.Component {
                 selectLocations={false}
                 recordType="Lab"
                 record={this.state.form}
+                containers={[]}
               />
             </div>
           ) : null }
