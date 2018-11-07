@@ -88,7 +88,7 @@ class PhysicalNewForm extends Component {
     }    
     return (
       <div className="row">
-        <div className="col-12 col-lg-6">
+        <div className="col-12">
           <form onSubmit={this.onFormSubmit}>
             <div className="form-group">
               <label htmlFor="name">Name</label>
@@ -153,11 +153,6 @@ class PhysicalNewForm extends Component {
               </div>
             </div>
           </form>
-        </div>
-        <div className="col-12 col-lg-6">
-          <div className="form-group">
-            <label>Suggestions</label>
-          </div>
         </div>
       </div>    
     );

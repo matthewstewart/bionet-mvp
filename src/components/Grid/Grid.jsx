@@ -4,6 +4,100 @@ import shortid from 'shortid';
 import './Grid.css';
 
 
+
+function GridContainer(props) {
+  const record = props.editMode === true ? props.formData : props.record;
+  const gridContainerStyles = {
+    'gridTemplateColumns': record ? `repeat(${record.columns}, 1fr)` : '1fr',
+    'gridTemplateRows': record ? `repeat(${record.rows}, 1fr)` : '1fr',
+  };
+  // create empty cells in json
+  let gridCellCount = record.columns * record.rows;
+  let gridCells = [];
+  let positionCounter = 1;
+  for(let pos = positionCounter; pos <= gridCellCount; pos++){
+    let row = pos > record.columns ? (pos % record.columns === 0) ? parseInt(pos / record.columns) : parseInt(pos / record.columns) + 1 : 1;
+    let column = pos > record.columns ? pos % record.columns : pos;
+    gridCells.push(<EmptyCell key={shortid.generate()} row={row} column={column} selectLocations={props.selectLocations === true}/>);
+  }
+  // replace empty cells with containers 
+  
+  for(let i = 0; i < props.containers.length; i++){
+    let container = props.containers[i];
+    for(let j = 0; j < container.locations.length; j++){
+      let {column, row} = container.locations[j];
+      //console.log(`${container.name} - ${column}, ${row}`)
+
+        gridCells.push(<Cell key={shortid.generate()} row={row} column={column} demo={props.demo === true} container={container}/>);
+
+    }
+  } 
+  return (
+    <>
+      <div className="grid-container dropdown" style={gridContainerStyles}>
+        { gridCells }
+      </div>
+    </>
+  );
+}
+
+function EmptyCell(props) {
+  let emptyChildStyles = {
+    'display': 'grid',
+    'alignSelf': 'stretch',
+    'justifySelf': 'stretch',
+    'gridTemplateColumns': '1fr',
+    'gridTemplateRows': '1fr',
+    'gridColumn': `${props.column} / span 1`,
+    'gridRow': `${props.row} / span 1`,
+  };
+  return (
+    <div 
+      className={'empty grid-item'}
+      style={emptyChildStyles}
+      //row={rowNo}
+      //col={colNo}
+      //pos={positionCounter}
+      data-toggle="tooltip"
+      data-placement="top"
+      //title={`${this.props.recordType} ${colNo}, ${rowNo} (Empty)`}
+  ></div>     
+  );
+}
+
+function Cell(props) {
+  let cellStyles = {
+    'backgroundColor': props.container.bgColor,
+    'borderColor': props.container.bgColor,
+    'gridColumn': `${props.column} / span 1`,
+    'gridRow': `${props.row} / span 1`
+  };
+  return (
+    <>
+      {(props.demo === true) ? (
+        <div
+          key={shortid.generate()}
+          style={cellStyles}
+          className="lab-container grid-item"
+          data-toggle="tooltip"
+          data-placement="top"
+          title={`Container - ${props.container.name} ${props.column}, ${props.row}`}            
+        ></div>
+      ) : (
+        <Link
+          key={shortid.generate()}
+          to={`/containers/${props.container._id}`}
+          style={cellStyles}
+          className="lab-container grid-item"
+          data-toggle="tooltip"
+          data-placement="top"
+          title={`Container - ${props.container.name} ${props.column}, ${props.row}`}            
+        ></Link>
+      )} 
+    </>   
+  );
+}
+
 class Grid extends Component {
 
   constructor(props) {
@@ -46,7 +140,9 @@ class Grid extends Component {
   }  
   
   componentDidUpdate() {
-    window.$('[data-toggle="tooltip"]').tooltip();
+    if (this.props.editMode === true) {
+      console.log('edit mode');
+    }
   }
 
   componentWillUnmount() {
@@ -56,7 +152,7 @@ class Grid extends Component {
   render() {
     const newItemLocations = this.props.newItemLocations || [];
     const containers = this.props.containers || [];
-    const record = this.props.record || null;
+    const record = this.props.editMode === true ? this.props.formData : this.props.record;
     const gridContainerStyles = {
       'gridTemplateColumns': record ? `repeat(${record.columns}, 1fr)` : '1fr',
       'gridTemplateRows': record ? `repeat(${record.rows}, 1fr)` : '1fr',
@@ -64,7 +160,11 @@ class Grid extends Component {
     let gridContainerChildren = [];
     let positionCounter = 1;
 
-    if (this.props.selectLocations === false) {
+
+    
+    if (this.props.selectLocations === false) { // select locations false
+      
+      // create empty cells in grid
       for(let rowNo = 1; rowNo <= record.rows; rowNo++){
         for(let colNo = 1; colNo <= record.columns; colNo++){
           let emptyChildStyles = {
@@ -94,8 +194,11 @@ class Grid extends Component {
           );
           positionCounter++;
         }  
-      }
-    } else if (this.props.selectLocations) {
+      } // end create empty cells
+      
+    } else if (this.props.selectLocations) { // select locations true
+      
+      // create empty cells in grid
       for(let rowNo = 1; rowNo <= record.rows; rowNo++){
         for(let colNo = 1; colNo <= record.columns; colNo++){
           let cellIsSelected = false;
@@ -130,8 +233,10 @@ class Grid extends Component {
           );
           positionCounter++;  
         }  
-      }      
-    }
+      } // end create empty cells
+
+    }// end if/else select locations
+
     // replace empty grid cells with child containers
     for(let i = 0; i < containers.length; i++){
       //let childIndex =  ((child.parent_y * gridContainerWidth) - gridContainerWidth) + child.parent_x - 1;
@@ -143,34 +248,55 @@ class Grid extends Component {
         let gridWidth = record.columns;
         let gridHeight = record.rows;
         let locationIndex = ((location.row * gridHeight) - gridWidth) + location.column - 1;
-        let containerLink = (
-          <Link
-            key={shortid.generate()}
-            to={`/containers/${container._id}`}
-            style={{
-              'backgroundColor': container.bgColor,
-              'borderColor': container.bgColor
-            }}
-            className="lab-container grid-item"
-            data-toggle="tooltip"
-            data-placement="top"
-            title={`Container - ${container.name} ${location.column}, ${location.row}`}            
-          ></Link>
-        );
+        let containerLink;
+        if (this.props.demo === true){
+          containerLink = (
+            <div
+              key={shortid.generate()}
+              style={{
+                'backgroundColor': container.bgColor,
+                'borderColor': container.bgColor
+              }}
+              className="lab-container grid-item"
+              data-toggle="tooltip"
+              data-placement="top"
+              title={`Container - ${container.name} ${location.column}, ${location.row}`}            
+            ></div>
+          );
+        } else  {
+          containerLink = (
+            <Link
+              key={shortid.generate()}
+              to={`/containers/${container._id}`}
+              style={{
+                'backgroundColor': container.bgColor,
+                'borderColor': container.bgColor
+              }}
+              className="lab-container grid-item"
+              data-toggle="tooltip"
+              data-placement="top"
+              title={`Container - ${container.name} ${location.column}, ${location.row}`}            
+            ></Link>
+          );
+        }
         gridContainerChildren[locationIndex] = containerLink;
       }
     }
     return (
-      <div className="card rounded-0 mt-3">
+      <div className="card rounded-0 mt-3 mb-3">
         <div className="card-header bg-dark text-light rounded-0">
           <h4 className="card-title mb-0 text-capitalize">
             {this.props.record.name || `(Select A ${this.props.recordType} Name)`}
           </h4>
         </div>
-        <div className="card-body">
+        {/* <div className="card-body">
           <div className="grid-container dropdown" style={gridContainerStyles}>
             {gridContainerChildren}
           </div>
+        </div> */}
+        <div className="card-body">
+          <GridContainer containers={this.props.containers} record={this.props.record} />
+          
         </div>
       </div>
     );

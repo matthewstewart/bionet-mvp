@@ -231,9 +231,12 @@ class LabEdit extends React.Component {
             <div className="col-12 col-lg-5">
               <Grid 
                 demo={true}
+                editMode={true}
+                formData={this.state.form}
                 selectLocations={false}
                 recordType="Lab"
                 record={this.state.form}
+                containers={this.state.containers}
               />
             </div>
           ) : null }
