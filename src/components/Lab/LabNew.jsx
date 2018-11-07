@@ -78,9 +78,10 @@ class LabNew extends React.Component {
     //     this.setState({ form: formData });
     //   });      
     // }
+    console.log(formData);
     this.postNewLab(formData)
     .then((res) => {
-      console.log(res);
+      console.log('post new lab res', res);
       this.props.refresh(this.props.currentUser);
       this.setState({
         redirect: true
