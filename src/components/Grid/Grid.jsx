@@ -29,12 +29,15 @@ function GridContainer(props) {
         selectCell={props.selectLocations === true ? props.selectCell : null}
       />);
   }
-  // replace empty cells with containers 
+  // add cells with containers 
   
   for(let i = 0; i < props.containers.length; i++){
     let container = props.containers[i];
+    //console.log('grid', container)
     for(let j = 0; j < container.locations.length; j++){
-      let {column, row} = container.locations[j];
+      let locationArray = container.locations[j];
+      let column = locationArray[0];
+      let row = locationArray[1];
       //console.log(`${container.name} - ${column}, ${row}`)
 
         gridCells.push(<Cell key={shortid.generate()} row={row} column={column} demo={props.demo === true} container={container}/>);
@@ -129,9 +132,9 @@ class Grid extends Component {
     let row = Number(e.target.getAttribute('row'));
     let col = Number(e.target.getAttribute('col'));
     let location = [col,row];
-    console.log('clicked location', location);
+    //console.log('clicked location', location);
     let isSelected = e.target.getAttribute('isselected') === 'true';
-    console.log('isSelected', isSelected);
+    //console.log('isSelected', isSelected);
     //console.log(`${col},${row} isselected`, isSelected);
     let isSingleCellSelectMode = this.props.selectSingle === true;
     let newLocationsFull = isSingleCellSelectMode && this.props.newItemLocations.length === 1;

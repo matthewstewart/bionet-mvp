@@ -14,7 +14,7 @@ class ContainerNewForm extends Component {
       form: {
         creator: this.props.currentUser._id || "",
         lab: this.props.lab._id || "",
-        parent: props.match.params.labId,
+        parent: null,
         name: "",
         description: "",
         rows: 1,

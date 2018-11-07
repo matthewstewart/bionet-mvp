@@ -65,7 +65,7 @@ class LabProfile extends React.Component {
     let labId = this.props.match.params.labId;
     this.getLab(labId)
     .then((res) => {
-      console.log('getData.res', res);
+      //console.log('getData.res', res);
       this.setState({
         lab: res.data,
         containers: res.children
