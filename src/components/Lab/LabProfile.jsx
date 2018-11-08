@@ -372,7 +372,7 @@ class LabProfile extends React.Component {
                 recordType="Lab"
                 record={this.state.lab}
                 containers={this.state.containers}
-                physicals={this.state.physicals}
+                physicals={this.props.physicals}
                 {...this.props}
                 {...this.state}
               />

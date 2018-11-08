@@ -54,7 +54,7 @@ function GridContainer(props) {
   // add cells with physicals
   for(let i = 0; i < props.physicals.length; i++){
     let physical = props.physicals[i];
-    console.log('grid', physical)
+    console.log('grid.addPhysicalCells.physical', physical)
     for(let j = 0; j < physical.locations.length; j++){
       let locationArray = physical.locations[j];
       let column = locationArray[0];
@@ -194,9 +194,9 @@ class Grid extends Component {
   }  
   
   componentDidUpdate() {
-    if (this.props.editMode === true) {
-      console.log('edit mode');
-    }
+    // if (this.props.editMode === true) {
+    //   console.log('edit mode');
+    // }
   }
 
   componentWillUnmount() {

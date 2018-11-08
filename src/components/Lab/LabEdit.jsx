@@ -12,6 +12,7 @@ class LabEdit extends React.Component {
       redirect: false,
       lab: {},
       containers: [],
+      physicals: [],
       form: {
         name: "",
         description: "",
@@ -115,10 +116,11 @@ class LabEdit extends React.Component {
     let labId = this.props.match.params.labId;
     this.getLab(labId)
     .then((res) => {
-      console.log('getData.res', res.data);
+      console.log('getData.res', res);
       this.setState({
         lab: res.data,
         containers: res.children,
+        physicals: res.physicals,
         form: res.data
       });
     });
@@ -237,6 +239,7 @@ class LabEdit extends React.Component {
                 recordType="Lab"
                 record={this.state.form}
                 containers={this.state.containers}
+                physicals={this.state.physicals}
               />
             </div>
           ) : null }
