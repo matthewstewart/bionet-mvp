@@ -58,26 +58,6 @@ class LabNew extends React.Component {
   }
 
   submitForm(formData) {
-    // if(formData.name.length > 0){
-    //   let config = {
-    //     'headers': {
-    //       'authorization': `Bearer ${Auth.getToken()}`
-    //     },
-    //     'json': true
-    //   };  
-    //   axios.post(`${appConfig.apiBaseUrl}/labs/new`, formData, config)
-    //   .then(res => {     
-    //     this.setState({ 
-    //       lab: res.data.data,
-    //       redirect: true 
-    //     });
-    //     this.props.setAlert("success", `${this.state.lab.name} was successfully created.`);
-    //   })
-    //   .catch(error => {
-    //     console.error(error);
-    //     this.setState({ form: formData });
-    //   });      
-    // }
     console.log(formData);
     this.postNewLab(formData)
     .then((res) => {
@@ -214,6 +194,7 @@ class LabNew extends React.Component {
                 recordType="Lab"
                 record={this.state.form}
                 containers={[]}
+                physicals={[]}
               />
             </div>
           ) : null }
