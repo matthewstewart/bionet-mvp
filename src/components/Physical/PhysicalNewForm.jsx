@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-// import Auth from '../../modules/Auth';
-// import appConfig from '../../configuration.js';
+import Auth from '../../modules/Auth';
+import appConfig from '../../configuration.js';
 //import axios from 'axios';
-import { generateRandomName } from '../../modules/Wu';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
+//import { generateRandomName } from '../../modules/Wu';
+
 
 class PhysicalNewForm extends Component {
   
@@ -11,6 +15,7 @@ class PhysicalNewForm extends Component {
     super(props);
     this.state = {
       redirect: false,
+      virtual: {},
       form: {
         creator: this.props.currentUser._id || "",
         lab: this.props.lab._id || "",
@@ -24,10 +29,56 @@ class PhysicalNewForm extends Component {
         locations: []
       }
     };
+    this.handleVirtualChange = this.handleVirtualChange.bind(this);
     this.updateField = this.updateField.bind(this);
-    this.wuGenerate = this.wuGenerate.bind(this);
+    //this.wuGenerate = this.wuGenerate.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.submitForm = this.submitForm.bind(this);
+  }
+
+  async postVirtualNew(formData) {
+    try {  
+      let request = new Request(`${appConfig.apiBaseUrl}/virtuals/new`, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let requestRes = await fetch(request);
+      let response = requestRes.json();
+      return response;
+    } catch (error) {
+      console.log('PhysicalNewForm.postVirtualNew', error);
+    }   
+  }
+
+  async postPhysicalNew(formData) {
+    try {  
+      let request = new Request(`${appConfig.apiBaseUrl}/physicals/new`, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let requestRes = await fetch(request);
+      let response = requestRes.json();
+      return response;
+    } catch (error) {
+      console.log('PhysicalNewForm.postPhysicalNew', error);
+    }   
+  }
+
+  handleVirtualChange(selectedArray) {
+    let virtual = selectedArray[0];
+    this.setState({
+      virtual
+    });
   }
 
   updateField(e) {
@@ -44,42 +95,59 @@ class PhysicalNewForm extends Component {
     });
   }
 
-  wuGenerate(e) {
-    e.preventDefault();
-    let form = this.state.form;
-    form.name = generateRandomName();
-    this.setState({
-      form
-    });
-  }
+  // wuGenerate(e) {
+  //   e.preventDefault();
+  //   let form = this.state.form;
+  //   form.name = generateRandomName();
+  //   this.setState({
+  //     form
+  //   });
+  // }
 
   onFormSubmit(e) {
     e.preventDefault();
     let formData = this.state.form;
     //console.log(formData);
     formData.locations = this.props.newItemLocations;
-    console.log(formData);
-    this.submitForm(formData);
+    let virtualExists = Object.keys(this.state.virtual).length > 0;
+    if (virtualExists) {
+      // if virtual exists add to form and proceed
+      console.log('virtual exists. form:', formData);
+      formData.virtual = this.state.virtual._id;
+      this.submitForm(formData);
+    } else {
+      // if virtual does not exist, create and on response add id to form and proceed
+      console.log('virtual doesn\'t exist - form:', formData);
+      let newVirtual = {
+        creator: this.props.currentUser._id,
+        name: formData.name,
+        description: formData.description,
+        provenance: "",
+        genotype: "",
+        sequence: "",
+        category: formData.category,
+        datName: "",
+        datHash: ""
+      };
+      this.postVirtualNew(newVirtual)
+      .then((res) => {
+        let virtual = res.data;
+        formData.virtual = virtual._id;
+        console.log('virtual created and added - form:', formData);
+        this.submitForm(formData);
+      });
+    }
   }
 
   submitForm(formData) {
-    // let config = {
-    //   'headers': {
-    //     'authorization': `Bearer ${Auth.getToken()}`
-    //   },
-    //   'json': true
-    // };  
-    // axios.post(`${appConfig.apiBaseUrl}/containers/new`, formData, config)
-    // .then(res => {
-    //   console.log('Response:', res.data); 
-    //   this.setState({ 
-    //     redirect: true 
-    //   });
-    // })
-    // .catch(error => {
-    //   console.error(error);
-    //   this.setState({ form: formData });
-    // }); 
+    this.postPhysicalNew(formData)
+    .then((res) => {
+      console.log('PhysicalNewForm.submitForm.res', res);
+      this.setState({
+        redirect: true
+      });
+      this.props.refresh(this.props.currentUser);
+    });
   }
 
   render() { 
@@ -91,24 +159,32 @@ class PhysicalNewForm extends Component {
         <div className="col-12">
           <form onSubmit={this.onFormSubmit}>
             <div className="form-group">
+              <label htmlFor="virtual">Instance Of:</label>
+              <Typeahead
+                labelKey="name"
+                name="virtual"
+                onChange={(selected) => {this.handleVirtualChange(selected)}}
+                onPaginate={(e) => console.log('Results paginated')}
+                options={this.props.virtuals}
+                paginate={true}
+                placeholder="Select Virtual Sample"
+                className="border-0"
+                maxResults={50}
+              />
+            </div>
+            <div className="form-group">
               <label htmlFor="name">Name</label>
-              <div className="input-group">
-                <input 
-                  type="text" 
-                  className="form-control"
-                  id="form-name"
-                  name="name" 
-                  placeholder="Physical Name"
-                  value={this.state.form.name}
-                  onChange={this.updateField}
-                />
-                <div className="input-group-append">
-                  <button 
-                    className="btn btn-warning"
-                    onClick={this.wuGenerate}
-                  >Wu Generate</button>
-                </div>
-              </div>
+              
+              <input 
+                type="text" 
+                className="form-control"
+                id="form-name"
+                name="name" 
+                placeholder="Physical Name"
+                value={this.state.form.name}
+                onChange={this.updateField}
+              />
+
             </div>
             <div className="form-group">
               <label htmlFor="bgColor">Background Color</label>       

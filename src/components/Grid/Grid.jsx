@@ -30,7 +30,6 @@ function GridContainer(props) {
       />);
   }
   // add cells with containers 
-  
   for(let i = 0; i < props.containers.length; i++){
     let container = props.containers[i];
     //console.log('grid', container)
@@ -39,9 +38,39 @@ function GridContainer(props) {
       let column = locationArray[0];
       let row = locationArray[1];
       //console.log(`${container.name} - ${column}, ${row}`)
-
-        gridCells.push(<Cell key={shortid.generate()} row={row} column={column} demo={props.demo === true} container={container}/>);
-
+      gridCells.push(
+        <Cell 
+          key={shortid.generate()} 
+          row={row} 
+          column={column} 
+          demo={props.demo === true} 
+          routePrefix="/containers"
+          cellType="Container"
+          item={container}
+        />
+      );
+    }
+  } 
+  // add cells with physicals
+  for(let i = 0; i < props.physicals.length; i++){
+    let physical = props.physicals[i];
+    console.log('grid', physical)
+    for(let j = 0; j < physical.locations.length; j++){
+      let locationArray = physical.locations[j];
+      let column = locationArray[0];
+      let row = locationArray[1];
+      //console.log(`${physical.name} - ${column}, ${row}`)
+      gridCells.push(
+        <Cell 
+          key={shortid.generate()} 
+          row={row} 
+          column={column} 
+          demo={props.demo === true} 
+          routePrefix="/physicals"
+          cellType="Physical"
+          item={physical}
+        />
+      );
     }
   } 
   return (
@@ -89,31 +118,33 @@ function EmptyCell(props) {
 
 function Cell(props) {
   let cellStyles = {
-    'backgroundColor': props.container.bgColor,
-    'borderColor': props.container.bgColor,
+    'backgroundColor': props.cellType === "Container" ? props.item.bgColor : "rgb(0, 209, 253)",
+    'borderColor': props.cellType === "Container" ? props.item.bgColor : "rgb(0, 209, 253)",
     'gridColumn': `${props.column} / span 1`,
     'gridRow': `${props.row} / span 1`
   };
+  let cellType = props.cellType;
+  let routePrefix = cellType === "Container" ? "/containers" : "/physicals";
   return (
     <>
       {(props.demo === true) ? (
         <div
           key={shortid.generate()}
           style={cellStyles}
-          className="lab-container grid-item"
+          className="grid-item"
           data-toggle="tooltip"
           data-placement="top"
-          title={`Container - ${props.container.name} ${props.column}, ${props.row}`}            
+          title={`${cellType} - ${props.item.name} ${props.column}, ${props.row}`}            
         ></div>
       ) : (
         <Link
           key={shortid.generate()}
-          to={`/containers/${props.container._id}`}
+          to={`${routePrefix}/${props.item._id}`}
           style={cellStyles}
-          className="lab-container grid-item"
+          className="grid-item"
           data-toggle="tooltip"
           data-placement="top"
-          title={`Container - ${props.container.name} ${props.column}, ${props.row}`}            
+          title={`${cellType} - ${props.item.name} ${props.column}, ${props.row}`}            
         ></Link>
       )} 
     </>   
@@ -318,7 +349,8 @@ class Grid extends Component {
         <div className="card-body">
           <GridContainer 
             selectCell={this.selectCell}
-            containers={this.props.containers} 
+            containers={this.props.containers}
+            physicals={this.props.physicals} 
             record={this.props.record} 
             newItemLocations={newItemLocations}
             {...this.props}/>       

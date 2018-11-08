@@ -12,7 +12,8 @@ class LabProfile extends React.Component {
     super(props);
     this.state = {
       lab: {},
-      containers: []
+      containers: [],
+      virtuals: []
     };
     this.getLab = this.getLab.bind(this);
     this.postLab = this.postLab.bind(this);
@@ -68,7 +69,8 @@ class LabProfile extends React.Component {
       //console.log('getData.res', res);
       this.setState({
         lab: res.data,
-        containers: res.children
+        containers: res.children,
+        virtuals: res.virtuals
       });
     });
   }
@@ -370,6 +372,7 @@ class LabProfile extends React.Component {
                 recordType="Lab"
                 record={this.state.lab}
                 containers={this.state.containers}
+                physicals={this.state.physicals}
                 {...this.props}
                 {...this.state}
               />
