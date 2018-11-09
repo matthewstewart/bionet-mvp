@@ -195,7 +195,7 @@ class ContainerNewForm extends Component {
             </div>
             <div className="form-group text-center">
               <div className="btn-group">
-                <Link to={`/labs/${this.props.match.params.labId}`} className="btn btn-secondary mt-5">Cancel</Link>
+                <Link to={`/labs/${this.props.match.params.labId || this.props.match.params.containerId}`} className="btn btn-secondary mt-5">Cancel</Link>
                 <button type="submit" className="btn btn-success mt-5">Save Container</button>
               </div>
             </div>

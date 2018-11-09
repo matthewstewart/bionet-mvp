@@ -18,8 +18,8 @@ class PhysicalNewForm extends Component {
       virtual: {},
       form: {
         creator: this.props.currentUser._id || "",
-        lab: this.props.lab._id || "",
-        parent: this.props.parentId || null,
+        lab: "",
+        parent: "",
         name: "",
         description: "",
         rows: 1,
@@ -109,6 +109,9 @@ class PhysicalNewForm extends Component {
     let formData = this.state.form;
     //console.log(formData);
     formData.locations = this.props.newItemLocations;
+    let isContainer = this.props.parentType && this.props.parentType === "Container";
+    formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
+    formData.parent = isContainer ? this.props.container._id : null;    
     let virtualExists = Object.keys(this.state.virtual).length > 0;
     if (virtualExists) {
       // if virtual exists add to form and proceed
