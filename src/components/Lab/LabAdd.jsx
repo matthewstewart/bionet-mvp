@@ -15,6 +15,7 @@ class LabAdd extends React.Component {
     this.state = {
       lab: {},
       containers: [],
+      physicals: [],
       newItemLocations: []
     };
     this.getLab = this.getLab.bind(this);
@@ -63,10 +64,11 @@ class LabAdd extends React.Component {
     let labId = this.props.match.params.labId;
     this.getLab(labId)
     .then((res) => {
-      //console.log('LabAdd.getData.res', res);
+      console.log('LabAdd.getData.res', res);
       this.setState({
         lab: res.data,
-        containers: res.children
+        containers: res.children,
+        physicals: res.physicals
       });
     });
   }
@@ -209,6 +211,7 @@ class LabAdd extends React.Component {
                   recordType="Lab"
                   record={this.state.lab}
                   containers={this.state.containers}
+                  physicals={this.state.physicals}
                 />
               </div>
             </>
