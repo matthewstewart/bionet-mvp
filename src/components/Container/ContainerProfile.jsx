@@ -4,20 +4,19 @@ import shortid from 'shortid';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
-import './LabProfile.css';
 
-class LabProfile extends React.Component {
+class ContainerProfile extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       error: "",
-      dragging: false,
       lab: {},
+      container: {},
       containers: [],
-      virtuals: []
+      physicals: []
     };
-    this.getLab = this.getLab.bind(this);
+    this.getContainer = this.getContainer.bind(this);
     this.postLab = this.postLab.bind(this);
     this.getData = this.getData.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
@@ -33,19 +32,19 @@ class LabProfile extends React.Component {
     this.moveItem = this.moveItem.bind(this);
   }
 
-  async getLab(labId) {
+  async getContainer(containerId) {
     try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${labId}`, {
+      let request = new Request(`${appConfig.apiBaseUrl}/containers/${containerId}`, {
         method: 'GET',
         headers: new Headers({
           'Authorization': `Bearer ${Auth.getToken()}`
         })
       });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
+      let res = await fetch(request);
+      let response = res.json();
+      return response;
     } catch (error) {
-      console.log('LabProfile.getLab', error);
+      console.log('ContainerProfile.getContainer', error);
     }  
   }
 
@@ -179,14 +178,15 @@ class LabProfile extends React.Component {
   }
 
   getData() {
-    let labId = this.props.match.params.labId;
-    this.getLab(labId)
+    let containerId = this.props.match.params.containerId;
+    this.getContainer(containerId)
     .then((res) => {
-      //console.log('getData.res', res);
+      console.log('getData.res', res);
       this.setState({
-        lab: res.data,
-        containers: res.children,
-        virtuals: res.virtuals
+        lab: res.data.lab,
+        container: res.data,
+        containers: res.containers,
+        physicals: res.physicals
       });
     });
   }
@@ -330,30 +330,16 @@ class LabProfile extends React.Component {
       for(let i = 0; i < this.state.physicals.length; i++){
         let physical = this.state.physicals[i];
         if (physical.lab){
-          console.log(physical.lab._id, lab._id);
-          if (physical.lab._id === lab._id && physical.parent === null){
-            console.log('match',physical.lab._id, lab._id);
+          //console.log(physical.lab._id, lab._id);
+          if (physical.lab._id === lab._id){
+            //console.log('match',physical.lab._id, lab._id);
             labPhysicals.push(physical);
           }
         }  
       }
     }
-
-    let labContainers = [];
-    if (this.state.containers && this.state.containers.length){
-      for(let i = 0; i < this.state.containers.length; i++){
-        let container = this.state.containers[i];
-        if (container.lab){
-          console.log(container.lab._id, lab._id);
-          if (container.lab._id === lab._id && container.parent === null){
-            console.log('match',container.lab._id, lab._id);
-            labContainers.push(container);
-          }
-        }  
-      }
-    }
     
-    const containers = labContainers.map((container, index) => {
+    const containers = this.state.containers.map((container, index) => {
       return (
         <div
           key={shortid.generate()}
@@ -419,7 +405,7 @@ class LabProfile extends React.Component {
       )
     }) : [];
     return (
-      <div className="LabProfile container-fluid">
+      <div className="ContainerProfile container-fluid">
         
         <div className="row">
           <div className="col-12 col-lg-7">
@@ -427,8 +413,8 @@ class LabProfile extends React.Component {
             <div className="card rounded-0 mt-3">
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
-                  <span><i className="mdi mdi-xl mdi-teach" /> {lab.name}</span>
-                  <div id="heading-toolbar" className="btn-group" role="group">
+                  <span><i className="mdi mdi-xl mdi-grid" />{this.state.container.name}</span>
+                  <div id="heading-toolbar" className="btn-group float-right" role="group">
                     {(userIsMember) ? (
                       <>
                         <div className="btn-group" role="group">                           
@@ -448,14 +434,14 @@ class LabProfile extends React.Component {
                             aria-labelledby="add-button"
                           >
                             <Link 
-                              to={`/labs/${this.props.match.params.labId}/add/container`}
+                              to={`/containers/${this.props.match.params.containerId}/add/container`}
                               className="dropdown-item"
                             >
                               <i className="mdi mdi-grid mr-2"/>
                               Container
                             </Link>
                             <Link 
-                              to={`/labs/${this.props.match.params.labId}/add/physical`}
+                              to={`/containers/${this.props.match.params.containerId}/add/physical`}
                               className="dropdown-item"
                             >
                               <i className="mdi mdi-flask mr-2"/>
@@ -480,14 +466,14 @@ class LabProfile extends React.Component {
                             aria-labelledby="settings-button"
                           >
                             <Link 
-                              to={`/labs/${this.props.match.params.labId}/edit`}
+                              to={`/containers/${this.props.match.params.containerId}/edit`}
                               className="dropdown-item"
                             >
                               <i className="mdi mdi-pencil mr-2"/>
                               Edit
                             </Link>
                             <Link 
-                              to={`/labs/${this.props.match.params.labId}/delete`}
+                              to={`/containers/${this.props.match.params.containerId}/delete`}
                               className="dropdown-item"
                             >
                               <i className="mdi mdi-delete mr-2"/>
@@ -546,7 +532,7 @@ class LabProfile extends React.Component {
                       </p>
                     ) : null}
                     <p className="card-text">
-                      {lab.description}
+                      {this.state.container.description}
                     </p>
                     {(userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
                       <>
@@ -570,7 +556,7 @@ class LabProfile extends React.Component {
                 ) : (
                   <div className="card-body">
                     <p className="card-text">
-                      There are currently no Containers in {lab.name}.
+                      There are currently no Containers in {this.state.container.name}.
                     </p>
                   </div>
                 )}  
@@ -587,7 +573,7 @@ class LabProfile extends React.Component {
                 ) : (
                   <div className="card-body">
                     <p className="card-text">
-                      There are currently no Physical Samples in {lab.name}.
+                      There are currently no Physical Samples in {this.state.container.name}.
                     </p>
                   </div>
                 )}  
@@ -601,14 +587,15 @@ class LabProfile extends React.Component {
                 demo={false}
                 selectLocations={false}
                 recordType="Lab"
-                record={this.state.lab}
-                containers={labContainers}
-                physicals={labPhysicals}
+                record={this.state.container}
+                containers={this.state.containers}
+                physicals={this.state.physicals}
                 dragging={this.state.dragging}
                 onCellDragStart={this.onCellDragStart}
                 onCellDragOver={this.onCellDragOver}
                 onCellDrop={this.onCellDrop}
                 onCellDragEnd={this.onCellDragEnd}
+                {...this.state}
               />
             </div>
           ) : null }
@@ -618,4 +605,4 @@ class LabProfile extends React.Component {
   }
 }
 
-export default LabProfile;
+export default ContainerProfile;

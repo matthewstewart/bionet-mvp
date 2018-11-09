@@ -6,75 +6,78 @@ import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import ContainerNewForm from '../Container/ContainerNewForm';
 import PhysicalNewForm from '../Physical/PhysicalNewForm';
-import './LabProfile.css';
 
-class LabAdd extends React.Component {
+class ContainerAdd extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       lab: {},
+      container: {},
       containers: [],
       physicals: [],
       newItemLocations: []
     };
-    this.getLab = this.getLab.bind(this);
-    this.updateLab = this.updateLab.bind(this);
+    this.getContainer = this.getContainer.bind(this);
+    this.postContainer = this.postContainer.bind(this);
+    this.updateContainer = this.updateContainer.bind(this);
     this.addLocation = this.addLocation.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
   }
 
-  async getLab(labId) {
+  async getContainer(containerId) {
     try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${labId}`, {
+      let request = new Request(`${appConfig.apiBaseUrl}/containers/${containerId}`, {
         method: 'GET',
         headers: new Headers({
           'Authorization': `Bearer ${Auth.getToken()}`
         })
       });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
+      let res = await fetch(request);
+      let response = res.json();
+      return response;
     } catch (error) {
-      console.log('LabProfile.getLab', error);
+      console.log('ContainerProfile.getContainer', error);
     }  
   }
 
-  async postLab(lab) {
+  async postContainer(formData) {
     try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${lab._id}/membership`, {
+      let request = new Request(`${appConfig.apiBaseUrl}/containers/new`, {
         method: 'POST',
-        //mode: "cors",
-        body: JSON.stringify(lab),
+        body: JSON.stringify(formData),
         headers: new Headers({
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${Auth.getToken()}`
         })
       });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
+      let res = await fetch(request);
+      let response = res.json();
+      return response;
     } catch (error) {
-      console.log('LabProfile.postLab', error);
+      console.log('ContainerEdit.postContainer', error);
     }   
   }
 
   getData() {
-    let labId = this.props.match.params.labId;
-    this.getLab(labId)
+    let containerId = this.props.match.params.containerId;
+    this.getContainer(containerId)
     .then((res) => {
-      console.log('LabAdd.getData.res', res);
+      console.log('ContainerAdd.getData.res', res);
       this.setState({
-        lab: res.data,
-        containers: res.children,
+        lab: res.data.lab,
+        container: res.data,
+        containers: res.containers,
         physicals: res.physicals
       });
     });
   }
 
-  updateLab(lab) {
-    this.postLab(lab)
+  updateContainer(container) {
+    let containerRecord = container;
+    containerRecord['parent'] = container._id;
+    this.postContainer(containerRecord)
     .then((res) => {
       console.log(res);
       this.getData();
@@ -158,36 +161,9 @@ class LabAdd extends React.Component {
       }
     }
 
-    let labPhysicals = [];
-    if (this.state.physicals && this.state.physicals.length){
-      for(let i = 0; i < this.state.physicals.length; i++){
-        let physical = this.state.physicals[i];
-        if (physical.lab){
-          console.log(physical.lab._id, lab._id);
-          if (physical.lab._id === lab._id && physical.parent === null){
-            console.log('match',physical.lab._id, lab._id);
-            labPhysicals.push(physical);
-          }
-        }  
-      }
-    }
-
-    let labContainers = [];
-    if (this.state.containers && this.state.containers.length){
-      for(let i = 0; i < this.state.containers.length; i++){
-        let container = this.state.containers[i];
-        if (container.lab){
-          console.log(container.lab._id, lab._id);
-          if (container.lab._id === lab._id && container.parent === null){
-            console.log('match',container.lab._id, lab._id);
-            labContainers.push(container);
-          }
-        }  
-      }
-    }
 
     return (
-      <div className="LabProfile container-fluid">
+      <div className="ContainerAdd container-fluid">
         <div className="row">
           {(isLoggedIn && userIsMember) ? (
             <>
@@ -202,11 +178,11 @@ class LabAdd extends React.Component {
                     <div className="card-body">
                       {(itemType === 'container') ? (
                         <p className="card-text">
-                          Select one or more cells for the Container to occupy within {this.state.lab.name}.
+                          Select one or more cells for the Container to occupy within {this.state.container.name}.
                         </p>
                       ) : (
                         <p className="card-text">
-                          Select which cell the Physical Sample will occupy within {this.state.lab.name}.
+                          Select which cell the Physical Sample will occupy within {this.state.container.name}.
                         </p>
                       )}    
                     </div>
@@ -214,12 +190,16 @@ class LabAdd extends React.Component {
                     <div className="card-body">
                       {(itemType === 'container') ? (
                         <ContainerNewForm 
-                          {...this.props} 
-                          {...this.state}
+                          parentType="Container"
+                          lab={this.state.lab}
+                          container={this.state.container}
+                          newItemLocations={this.state.newItemLocations}
+                          {...this.props}
                         />
                       ) : null } 
                       {(itemType === 'physical') ? (
                         <PhysicalNewForm 
+                          parentType="Container"
                           {...this.props} 
                           {...this.state}
                         />
@@ -236,10 +216,10 @@ class LabAdd extends React.Component {
                   newItemLocations={this.state.newItemLocations}
                   addLocation={this.addLocation}
                   removeLocation={this.removeLocation}
-                  recordType="Lab"
-                  record={this.state.lab}
-                  containers={labContainers}
-                  physicals={labPhysicals}
+                  recordType="Container"
+                  record={this.state.container}
+                  containers={this.state.containers}
+                  physicals={this.state.physicals}
                 />
               </div>
             </>
@@ -250,4 +230,4 @@ class LabAdd extends React.Component {
   }
 }
 
-export default LabAdd;
+export default ContainerAdd;

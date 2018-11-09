@@ -13,8 +13,8 @@ class ContainerNewForm extends Component {
       redirect: false,
       form: {
         creator: this.props.currentUser._id || "",
-        lab: this.props.lab._id || "",
-        parent: null,
+        lab: "",
+        parent: "",
         name: "",
         description: "",
         rows: 1,
@@ -78,7 +78,10 @@ class ContainerNewForm extends Component {
     let formData = this.state.form;
     //console.log(formData);
     formData.locations = this.props.newItemLocations;
-    //console.log(formData);
+    let isContainer = this.props.parentType && this.props.parentType === "Container";
+    formData.lab = isContainer ? this.props.container.lab._id : this.props.lab._id;
+    formData.parent = isContainer ? this.props.container._id : null;
+    console.log(formData);
     this.submitForm(formData);
   }
 
@@ -101,6 +104,11 @@ class ContainerNewForm extends Component {
       <div className="row">
         <div className="col-12 col-lg-6">
           <form onSubmit={this.onFormSubmit}>
+            
+            {(this.props.parentType && this.props.parentType === "Container") ? (
+              <input type="hidden" name="parent" value={this.props.container._id}/>
+            ) : null }  
+            
             <div className="form-group">
               <label htmlFor="name">Name</label>
               <div className="input-group">

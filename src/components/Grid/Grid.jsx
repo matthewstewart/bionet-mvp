@@ -29,6 +29,7 @@ function GridContainer(props) {
         selectCell={props.selectLocations === true ? props.selectCell : null}
         onCellDrop={props.onCellDrop}
         onCellDragOver={props.onCellDragOver}
+        //onCellDragEnd={props.onCellDragEnd}
       />);
   }
   // add cells with containers 
@@ -50,6 +51,7 @@ function GridContainer(props) {
           cellType="Container"
           item={container}
           onCellDragStart={props.onCellDragStart}
+          //onCellDragEnd={props.onCellDragEnd}
         />
       );
     }
@@ -73,6 +75,7 @@ function GridContainer(props) {
           cellType="Physical"
           item={physical}
           onCellDragStart={props.onCellDragStart}
+          //onCellDragEnd={props.onCellDragEnd}
         />
       );
     }
@@ -81,7 +84,9 @@ function GridContainer(props) {
     <>
       <div className="grid-container dropdown" style={gridContainerStyles}>
         { gridCells }
+        
       </div>
+      {(props.dragging) ? ("dragging") : null}
     </>
   );
 }
@@ -118,6 +123,7 @@ function EmptyCell(props) {
       onClick={props.selectCell}
       onDrop={props.onCellDrop}
       onDragOver={props.onCellDragOver}
+      onDragEnd={props.onCellDragEnd}
       draggable={false}
   ></div>     
   );
@@ -128,7 +134,7 @@ function Cell(props) {
     'backgroundColor': props.cellType === "Container" ? props.item.bgColor : "rgb(0, 209, 253)",
     'borderColor': props.cellType === "Container" ? props.item.bgColor : "rgb(0, 209, 253)",
     'gridColumn': `${props.column} / span 1`,
-    'gridRow': `${props.row} / span 1`
+    'gridRow': `${props.dragging ? props.row + 1 : props.row} / span 1`
   };
   let cellType = props.cellType;
   let routePrefix = cellType === "Container" ? "/containers" : "/physicals";
@@ -157,6 +163,7 @@ function Cell(props) {
           title={`${cellType} - ${props.item.name} ${props.column}, ${props.row}`} 
           draggable={true}
           onDragStart={props.onCellDragStart}
+          //onDragEnd={props.onCellDragEnd}
         ></Link>
       )} 
     </>   

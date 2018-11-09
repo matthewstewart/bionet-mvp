@@ -18,6 +18,10 @@ const LabAdd = lazy(() => import('./components/Lab/LabAdd'));
 const LabEdit = lazy(() => import('./components/Lab/LabEdit'));
 const LabDelete = lazy(() => import('./components/Lab/LabDelete'));
 
+const ContainerProfile = lazy(() => import('./components/Container/ContainerProfile'));
+const ContainerAdd = lazy(() => import('./components/Container/ContainerAdd'));
+const ContainerEdit = lazy(() => import('./components/Container/ContainerEdit'));
+
 function WaitForComponent(Component, state, refreshMethod) {
   return props => (
     <ErrorBoundary>
@@ -210,6 +214,12 @@ class App extends React.Component {
             <Route path='/labs/:labId/edit' component={WaitForComponent(LabEdit, this.state, this.getCurrentUserLabs)}/>
             <Route path='/labs/:labId/delete' component={WaitForComponent(LabDelete, this.state, this.getCurrentUserLabs)}/>
             <Route path="/labs/:labId" component={WaitForComponent(LabProfile, this.state, this.getCurrentUserLabs)}/>
+          </Switch>  
+
+          <Switch>
+            <Route path='/containers/:containerId/add/:itemType' component={WaitForComponent(ContainerAdd, this.state, this.getCurrentUserLabs)}/>
+            <Route path="/containers/:containerId/edit" exact component={WaitForComponent(ContainerEdit, this.state, this.getCurrentUserLabs)}/>
+            <Route path="/containers/:containerId" exact component={WaitForComponent(ContainerProfile, this.state, this.getCurrentUserLabs)}/>
           </Switch>  
 
           <Switch>
