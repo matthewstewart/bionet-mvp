@@ -11,6 +11,7 @@ class LabProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      error: "",
       lab: {},
       containers: [],
       virtuals: []
@@ -159,19 +160,25 @@ class LabProfile extends React.Component {
     let lab = this.state.lab;
     let users = [];
     let joinRequests = [];
-    for(let i = 0; i < lab.users.length; i++){
-      let user = lab.users[i];
-      if (user._id !== this.props.currentUser._id){
-        users.push(user._id);
-      }  
-    };
-    for(let i = 0; i < lab.joinRequests.length; i++){
-      let request = lab.joinRequests[i];
-      joinRequests.push(request._id);
-    };
-    lab.users = users;
-    lab.joinRequests = joinRequests;
-    this.updateLab(lab);    
+    if (lab.users.length === 1){
+      this.setState({ 
+        error: "You are the last member of this Lab. You must Delete the Lab to leave it."
+      });
+    } else {
+      for(let i = 0; i < lab.users.length; i++){
+        let user = lab.users[i];
+        if (user._id !== this.props.currentUser._id){
+          users.push(user._id);
+        }  
+      };
+      for(let i = 0; i < lab.joinRequests.length; i++){
+        let request = lab.joinRequests[i];
+        joinRequests.push(request._id);
+      };
+      lab.users = users;
+      lab.joinRequests = joinRequests;
+      this.updateLab(lab);
+    }      
   }
   
   updateLab(lab) {
@@ -208,15 +215,15 @@ class LabProfile extends React.Component {
       for(let i = 0; i < this.props.physicals.length; i++){
         let physical = this.props.physicals[i];
         if (physical.lab){
-          console.log(physical.lab._id, lab._id);
+          //console.log(physical.lab._id, lab._id);
           if (physical.lab._id === lab._id){
-            console.log('match',physical.lab._id, lab._id);
+            //console.log('match',physical.lab._id, lab._id);
             labPhysicals.push(physical);
           }
         }  
       }
     }
-    console.log(labPhysicals)
+    //console.log(labPhysicals)
     const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
       return (
         <div 
@@ -364,6 +371,11 @@ class LabProfile extends React.Component {
               {(isLoggedIn) ? (
                 <>
                   <div className="card-body">
+                    {(this.state.error.length > 0) ? (
+                      <p className="card-text text-danger">
+                        {this.state.error}
+                      </p>
+                    ) : null}
                     <p className="card-text">
                       {lab.description}
                     </p>
