@@ -27,6 +27,8 @@ function GridContainer(props) {
         selectLocations={props.selectLocations === true}
         newItemLocations={props.newItemLocations || []}
         selectCell={props.selectLocations === true ? props.selectCell : null}
+        onCellDrop={props.onCellDrop}
+        onCellDragOver={props.onCellDragOver}
       />);
   }
   // add cells with containers 
@@ -47,6 +49,7 @@ function GridContainer(props) {
           routePrefix="/containers"
           cellType="Container"
           item={container}
+          onCellDragStart={props.onCellDragStart}
         />
       );
     }
@@ -59,7 +62,7 @@ function GridContainer(props) {
       let locationArray = physical.locations[j];
       let column = locationArray[0];
       let row = locationArray[1];
-      //console.log(`${physical.name} - ${column}, ${row}`)
+      console.log(`${physical.name} - ${column}, ${row}`)
       gridCells.push(
         <Cell 
           key={shortid.generate()} 
@@ -69,6 +72,7 @@ function GridContainer(props) {
           routePrefix="/physicals"
           cellType="Physical"
           item={physical}
+          onCellDragStart={props.onCellDragStart}
         />
       );
     }
@@ -112,6 +116,9 @@ function EmptyCell(props) {
       data-placement="top"
       //title={`${props.recordType} ${props.column}, ${props.row} (Empty)`}
       onClick={props.selectCell}
+      onDrop={props.onCellDrop}
+      onDragOver={props.onCellDragOver}
+      draggable={false}
   ></div>     
   );
 }
@@ -139,12 +146,17 @@ function Cell(props) {
       ) : (
         <Link
           key={shortid.generate()}
+          id={props.item._id}
           to={`${routePrefix}/${props.item._id}`}
           style={cellStyles}
+          row={props.row}
+          col={props.column}
           className="grid-item"
           data-toggle="tooltip"
           data-placement="top"
-          title={`${cellType} - ${props.item.name} ${props.column}, ${props.row}`}            
+          title={`${cellType} - ${props.item.name} ${props.column}, ${props.row}`} 
+          draggable={true}
+          onDragStart={props.onCellDragStart}
         ></Link>
       )} 
     </>   
