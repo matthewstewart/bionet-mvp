@@ -184,9 +184,9 @@ class PhysicalNewForm extends Component {
                 value={this.state.form.name}
                 onChange={this.updateField}
               />
-
             </div>
-            <div className="form-group">
+
+            {/* <div className="form-group">
               <label htmlFor="bgColor">Background Color</label>       
               <input 
                 type="color" 
@@ -196,7 +196,8 @@ class PhysicalNewForm extends Component {
                 value={this.state.form.bgColor}
                 onChange={this.updateField}
               />
-            </div>            
+            </div>   */}
+
             <div className="form-group">
               <label htmlFor="description">Description</label>
               <textarea

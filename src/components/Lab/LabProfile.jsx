@@ -331,7 +331,31 @@ class LabProfile extends React.Component {
         }  
       }
     }
-    //console.log(labPhysicals)
+    
+    const containers = this.state.containers.map((container, index) => {
+      return (
+        <Link 
+          key={shortid.generate()}
+          className="list-group-item list-group-item-action bg-info text-light rounded-0"
+          to={`/containers/${container._id}`}
+        >
+          <i className="mdi mdi-grid mr-2"/>{container.name}
+        </Link>        
+      );
+    });
+
+    const physicals = labPhysicals.map((physical, index) => {
+      return (
+        <Link 
+          key={shortid.generate()}
+          className="list-group-item list-group-item-action bg-info text-light rounded-0"
+          to={`/physicals/${physical._id}`}
+        >
+          <i className="mdi mdi-flask mr-2"/>{physical.name}
+        </Link>        
+      );
+    });
+
     const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
       return (
         <div 
@@ -363,6 +387,7 @@ class LabProfile extends React.Component {
         
         <div className="row">
           <div className="col-12 col-lg-7">
+
             <div className="card rounded-0 mt-3">
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
@@ -497,7 +522,43 @@ class LabProfile extends React.Component {
                 </>
               ) : null}   
             </div>
+
+              <div className="card rounded-0 mt-3">
+                <div className="card-header rounded-0 bg-dark text-light">
+                  <h5 className="card-title mb-0 text-capitalize">Containers ({containers.length})</h5>
+                </div>
+                {(containers.length > 0) ? (
+                  <ul className="list-group list-group-flush">
+                    {containers}
+                  </ul>
+                ) : (
+                  <div className="card-body">
+                    <p className="card-text">
+                      There are currently no Containers in {lab.name}.
+                    </p>
+                  </div>
+                )}  
+              </div> 
+              
+              <div className="card rounded-0 mt-3">
+                <div className="card-header rounded-0 bg-dark text-light">
+                  <h5 className="card-title mb-0 text-capitalize">Physical Samples ({physicals.length})</h5>
+                </div>
+                {(physicals.length > 0) ? (
+                  <ul className="list-group list-group-flush">
+                    {physicals}
+                  </ul>
+                ) : (
+                  <div className="card-body">
+                    <p className="card-text">
+                      There are currently no Physical Samples in {lab.name}.
+                    </p>
+                  </div>
+                )}  
+              </div>   
+
           </div>
+
           {(isLoggedIn) ? (
             <div className="col-12 col-lg-5">
               <Grid 
