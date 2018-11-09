@@ -158,6 +158,20 @@ class LabAdd extends React.Component {
       }
     }
 
+    let labPhysicals = [];
+    if (this.props.physicals && this.props.physicals.length){
+      for(let i = 0; i < this.props.physicals.length; i++){
+        let physical = this.props.physicals[i];
+        if (physical.lab){
+          console.log(physical.lab._id, lab._id);
+          if (physical.lab._id === lab._id){
+            console.log('match',physical.lab._id, lab._id);
+            labPhysicals.push(physical);
+          }
+        }  
+      }
+    }
+
     return (
       <div className="LabProfile container-fluid">
         <div className="row">
@@ -211,7 +225,7 @@ class LabAdd extends React.Component {
                   recordType="Lab"
                   record={this.state.lab}
                   containers={this.state.containers}
-                  physicals={this.state.physicals}
+                  physicals={labPhysicals}
                 />
               </div>
             </>

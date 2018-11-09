@@ -54,7 +54,7 @@ function GridContainer(props) {
   // add cells with physicals
   for(let i = 0; i < props.physicals.length; i++){
     let physical = props.physicals[i];
-    console.log('grid.addPhysicalCells.physical', physical)
+    //console.log('grid.addPhysicalCells.physical', physical)
     for(let j = 0; j < physical.locations.length; j++){
       let locationArray = physical.locations[j];
       let column = locationArray[0];

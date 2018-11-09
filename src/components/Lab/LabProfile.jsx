@@ -203,6 +203,20 @@ class LabProfile extends React.Component {
         if (userLab._id === lab._id) { userIsRequestingMembership = true; }
       }
     }
+    let labPhysicals = [];
+    if (this.props.physicals && this.props.physicals.length){
+      for(let i = 0; i < this.props.physicals.length; i++){
+        let physical = this.props.physicals[i];
+        if (physical.lab){
+          console.log(physical.lab._id, lab._id);
+          if (physical.lab._id === lab._id){
+            console.log('match',physical.lab._id, lab._id);
+            labPhysicals.push(physical);
+          }
+        }  
+      }
+    }
+    console.log(labPhysicals)
     const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
       return (
         <div 
@@ -297,7 +311,7 @@ class LabProfile extends React.Component {
                               Edit
                             </Link>
                             <Link 
-                              to={`/labs/${this.props.match.params.labId}/remove`}
+                              to={`/labs/${this.props.match.params.labId}/delete`}
                               className="dropdown-item"
                             >
                               <i className="mdi mdi-delete mr-2"/>
@@ -372,8 +386,7 @@ class LabProfile extends React.Component {
                 recordType="Lab"
                 record={this.state.lab}
                 containers={this.state.containers}
-                physicals={this.props.physicals}
-                {...this.props}
+                physicals={labPhysicals}
                 {...this.state}
               />
             </div>
