@@ -531,9 +531,10 @@ class ContainerProfile extends React.Component {
                         {this.state.error}
                       </p>
                     ) : null}
-                    <p className="card-text">
-                      {this.state.container.description}
-                    </p>
+                    
+                      {this.state.container.description && this.state.container.description.length > 0 ? (
+                        <p className="card-text">{this.state.container.description}</p>
+                      ) : null }
                     {(userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
                       <>
                       <h5>Membership Requests</h5> 

@@ -193,7 +193,6 @@ class ContainerEdit extends React.Component {
                           <button 
                             type="submit" 
                             className="btn btn-success mt-3"
-                            disabled={!formValid}
                           >Submit</button>
                         </div>  
                       </div>                    
