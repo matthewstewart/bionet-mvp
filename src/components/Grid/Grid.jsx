@@ -19,6 +19,7 @@ function GridContainer(props) {
   for(let pos = positionCounter; pos <= gridCellCount; pos++){
     let row = pos > record.columns ? (pos % record.columns === 0) ? parseInt(pos / record.columns) : parseInt(pos / record.columns) + 1 : 1;
     let column = pos > record.columns ? pos % record.columns : pos;
+    if (column === 0) { column = record.columns }
     gridCells.push(
       <EmptyCell 
         key={shortid.generate()} 

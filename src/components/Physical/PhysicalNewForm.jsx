@@ -26,7 +26,10 @@ class PhysicalNewForm extends Component {
         columns: 1,
         category: "General",
         bgColor: "#00D1FD",
-        locations: []
+        locations: [],
+        provenance: "",
+        genotype: "",
+        sequence: ""
       }
     };
     this.handleVirtualChange = this.handleVirtualChange.bind(this);
@@ -75,7 +78,7 @@ class PhysicalNewForm extends Component {
   }
 
   handleVirtualChange(selectedArray) {
-    let virtual = selectedArray[0];
+    let virtual = selectedArray[0] || {};
     this.setState({
       virtual
     });
@@ -125,9 +128,9 @@ class PhysicalNewForm extends Component {
         creator: this.props.currentUser._id,
         name: formData.name,
         description: formData.description,
-        provenance: "",
-        genotype: "",
-        sequence: "",
+        provenance: formData.provenance,
+        genotype: formData.genotype,
+        sequence: formData.sequence,
         category: formData.category,
         datName: "",
         datHash: ""
@@ -158,7 +161,7 @@ class PhysicalNewForm extends Component {
       return ( <Redirect to={`/labs/${this.props.lab._id}`}/> )
     }    
     return (
-      <div className="row">
+      <div className="row mb-3">
         <div className="col-12">
           <form onSubmit={this.onFormSubmit}>
             <div className="form-group">
@@ -170,11 +173,12 @@ class PhysicalNewForm extends Component {
                 onPaginate={(e) => console.log('Results paginated')}
                 options={this.props.virtuals}
                 paginate={true}
-                placeholder="Select Virtual Sample"
+                placeholder="Select Existing Virtual Sample (optional)"
                 className="border-0"
                 maxResults={50}
               />
             </div>
+
             <div className="form-group">
               <label htmlFor="name">Name</label>
               
@@ -212,6 +216,49 @@ class PhysicalNewForm extends Component {
                 onChange={this.updateField}
               ></textarea>
             </div>
+            {(Object.keys(this.state.virtual).length === 0) ? (
+              <>
+                <div className="form-group">
+                  <label htmlFor="provenance">Provenance</label>
+                  <input 
+                    type="text" 
+                    className="form-control"
+                    id="form-name"
+                    name="provenance" 
+                    placeholder="Sample Provenance"
+                    value={this.state.form.provenance}
+                    onChange={this.updateField}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="genotype">Genotype</label>
+                  <input 
+                    type="text" 
+                    className="form-control"
+                    id="form-name"
+                    name="genotype" 
+                    placeholder="Sample Genotype"
+                    value={this.state.form.genotype}
+                    onChange={this.updateField}
+                  />
+                </div>            
+
+                <div className="form-group">
+                  <label htmlFor="sequence">Sequence</label>
+                  <textarea
+                    type="textarea"
+                    className="form-control"
+                    name="sequence"
+                    placeholder="AGTCAGTCAG..."
+                    value={this.state.form.sequence}
+                    onChange={this.updateField}
+                    rows="5"
+                  ></textarea>
+                </div>
+              </>
+            ) : null }
+
             <div className="form-group">
               <label htmlFor="category">Category</label>
               <select
@@ -226,6 +273,7 @@ class PhysicalNewForm extends Component {
                 <option value="OrganismSample">Organism Sample</option>
               </select>
             </div>
+
             <div className="form-group text-center">
               <div className="btn-group">
                 {(this.props.parentType && this.props.parentType === "Container") ? (

@@ -5,6 +5,7 @@
 	width: 100%;
 	min-height: calc(100vh - 60px - 60px);
 	background-color: rgb(122, 161, 172);
+	padding-bottom: 1.2em;
 	/* background-color: black; */
 }
 
