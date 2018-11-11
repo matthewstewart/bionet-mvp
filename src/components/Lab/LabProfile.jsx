@@ -547,9 +547,17 @@ class LabProfile extends React.Component {
                         {this.state.error}
                       </p>
                     ) : null}
-                    <p className="card-text">
-                      {lab.description}
-                    </p>
+                    
+                      {(lab.description && lab.description.length > 0) ? (
+                        <p className="card-text">
+                          {lab.description}
+                        </p>
+                      ) : (
+                        <p className="card-text">
+                          No description provided.
+                        </p>
+                      )}
+                    
                     {(userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
                       <>
                       <h5>Membership Requests</h5> 
