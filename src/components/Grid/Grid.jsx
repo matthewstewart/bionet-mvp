@@ -65,7 +65,7 @@ function GridContainer(props) {
       let locationArray = physical.locations[j];
       let column = locationArray[0];
       let row = locationArray[1];
-      console.log(`${physical.name} - ${column}, ${row}`)
+      //console.log(`${physical.name} - ${column}, ${row}`)
       gridCells.push(
         <Cell 
           key={shortid.generate()} 

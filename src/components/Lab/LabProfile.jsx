@@ -4,6 +4,7 @@ import shortid from 'shortid';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
+import Physicals from '../Physical/Physicals';
 import './LabProfile.css';
 
 class LabProfile extends React.Component {
@@ -330,12 +331,12 @@ class LabProfile extends React.Component {
       for(let i = 0; i < this.props.physicals.length; i++){
         let physical = this.props.physicals[i];
         if (physical.lab){
-          console.log('Physical Match', physical.lab._id, lab._id);
+          //console.log('Physical Match', physical.lab._id, lab._id);
           if (physical.lab._id === lab._id && physical.parent === null){
-            console.log('match',physical.lab._id, lab._id);
+            //console.log('match',physical.lab._id, lab._id);
             labPhysicals.push(physical);
           } else {
-            console.log('no match', physical.lab._id, lab._id);
+            //console.log('no match', physical.lab._id, lab._id);
           }
         }  
       }
@@ -346,9 +347,9 @@ class LabProfile extends React.Component {
       for(let i = 0; i < this.state.containers.length; i++){
         let container = this.state.containers[i];
         if (container.lab){
-          console.log(container.lab._id, lab._id);
+          //console.log(container.lab._id, lab._id);
           if (container.lab._id === lab._id && container.parent === null){
-            console.log('match',container.lab._id, lab._id);
+            //console.log('match',container.lab._id, lab._id);
             labContainers.push(container);
           }
         }  
@@ -366,26 +367,6 @@ class LabProfile extends React.Component {
             <div className="btn-group float-right">
               <Link 
                 to={`/containers/${container._id}`}
-                className="btn btn-sm btn-info rounded-0"
-              >View Details</Link>
-            </div>
-          </h4>
-        </div>        
-      );
-    });
-
-    const physicals = labPhysicals.map((physical, index) => {
-      return (
-        <div 
-          key={shortid.generate()}
-          className="list-group-item list-group-item-action rounded-0"
-          to={`/physicals/${physical._id}`}
-        >
-          <h4 className="mb-0">
-            <i className="mdi mdi-flask mr-2"/>{physical.name}
-            <div className="btn-group float-right">
-              <Link 
-                to={`/physicals/${physical._id}`}
                 className="btn btn-sm btn-info rounded-0"
               >View Details</Link>
             </div>
@@ -584,24 +565,9 @@ class LabProfile extends React.Component {
                     </p>
                   </div>
                 )}  
-              </div> 
-              
-              <div className="card rounded-0 mt-3">
-                <div className="card-header rounded-0 bg-dark text-light">
-                  <h5 className="card-title mb-0 text-capitalize">Physical Samples ({physicals.length})</h5>
-                </div>
-                {(physicals.length > 0) ? (
-                  <ul className="list-group list-group-flush">
-                    {physicals}
-                  </ul>
-                ) : (
-                  <div className="card-body">
-                    <p className="card-text">
-                      There are currently no Physical Samples in {lab.name}.
-                    </p>
-                  </div>
-                )}  
-              </div>   
+              </div>  
+
+              <Physicals physicals={labPhysicals} />
 
           </div>
 

@@ -14,7 +14,9 @@ class ContainerProfile extends React.Component {
       lab: {},
       container: {},
       containers: [],
-      physicals: []
+      physicalsMode: "List",
+      physicals: [],
+      physical: {}
     };
     this.getContainer = this.getContainer.bind(this);
     this.postLab = this.postLab.bind(this);
@@ -30,6 +32,46 @@ class ContainerProfile extends React.Component {
     this.onCellDragEnd = this.onCellDragEnd.bind(this);
     this.onCellDrop = this.onCellDrop.bind(this);
     this.moveItem = this.moveItem.bind(this);
+    this.changePhysicalsMode = this.changePhysicalsMode.bind(this);
+  }
+
+  changePhysicalsMode(mode, physical) {
+    switch(mode) {
+      case 'List':
+        this.setState({
+          physicalsMode: "List",
+          physical: {}
+        });
+        break;
+      case 'View': 
+        this.setState({
+          physicalsMode: "View",
+          physical
+        });
+        break;
+      case 'Edit':
+        this.setState({
+          physicalsMode: "Edit",
+          physical
+        });
+        break;      
+      case 'Delete':
+        this.setState({
+          physicalsMode: "Delete",
+          physical
+        });
+        break;       
+      default:
+        this.setState({
+          physicalsMode: "List",
+          physical: {}
+        });
+    }
+  }
+
+  onPhysicalModeChangeClick(e) {
+    let physicalId = e.target.getAttribute('id');
+    console.log(physicalId);
   }
 
   async getContainer(containerId) {
