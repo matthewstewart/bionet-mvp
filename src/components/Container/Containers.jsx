@@ -20,6 +20,7 @@ class Containers extends Component {
       newParent: {},
       newItemLocations: []
     };
+    this.onMoveCancel = this.onMoveCancel.bind(this);
     this.updateContainer = this.updateContainer.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
     this.onChangeMode = this.onChangeMode.bind(this);
@@ -46,6 +47,10 @@ class Containers extends Component {
     } catch (error) {
       console.log('Containers.updateContainer', error);
     }   
+  }
+
+  onMoveCancel() {
+    this.changeMode("List");
   }
 
   updateLocation() {
@@ -261,6 +266,7 @@ class Containers extends Component {
                   >Yes, Move {container.name}</button> 
                   <button 
                     className="btn btn-secondary rounded-0"
+                    onClick={this.onMoveCancel}
                   >Cancel</button>
                 </div>
               </> 
