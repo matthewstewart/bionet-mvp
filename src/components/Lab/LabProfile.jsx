@@ -567,7 +567,11 @@ class LabProfile extends React.Component {
                 )}  
               </div>  
 
-              <Physicals physicals={labPhysicals} />
+              <Physicals 
+                physicals={labPhysicals} 
+                currentUser={this.props.currentUser}
+                refresh={this.props.refresh}
+              />
 
           </div>
 

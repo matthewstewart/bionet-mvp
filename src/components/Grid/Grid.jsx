@@ -151,21 +151,41 @@ function Cell(props) {
           title={`${cellType} - ${props.item.name} ${props.column}, ${props.row}`}            
         ></div>
       ) : (
-        <Link
-          key={shortid.generate()}
-          id={props.item._id}
-          to={`${routePrefix}/${props.item._id}`}
-          style={cellStyles}
-          row={props.row}
-          col={props.column}
-          className="grid-item"
-          data-toggle="tooltip"
-          data-placement="top"
-          title={`${cellType} - ${props.item.name} ${props.column}, ${props.row}`} 
-          draggable={true}
-          onDragStart={props.onCellDragStart}
-          //onDragEnd={props.onCellDragEnd}
-        ></Link>
+        <>
+          {(cellType="Physical") ? (
+            <div
+              key={shortid.generate()}
+              id={props.item._id}
+              to={`${routePrefix}/${props.item._id}`}
+              style={cellStyles}
+              row={props.row}
+              col={props.column}
+              className="grid-item"
+              data-toggle="tooltip"
+              data-placement="top"
+              title={`${cellType} - ${props.item.name} ${props.column}, ${props.row}`} 
+              draggable={true}
+              onDragStart={props.onCellDragStart}
+              //onDragEnd={props.onCellDragEnd}
+            ></div>
+          ) : (
+            <Link
+              key={shortid.generate()}
+              id={props.item._id}
+              to={`${routePrefix}/${props.item._id}`}
+              style={cellStyles}
+              row={props.row}
+              col={props.column}
+              className="grid-item"
+              data-toggle="tooltip"
+              data-placement="top"
+              title={`${cellType} - ${props.item.name} ${props.column}, ${props.row}`} 
+              draggable={true}
+              onDragStart={props.onCellDragStart}
+              //onDragEnd={props.onCellDragEnd}
+            ></Link>
+          )}
+        </>
       )} 
     </>   
   );
