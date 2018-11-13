@@ -5,6 +5,7 @@ import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import Physicals from '../Physical/Physicals';
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 
 class ContainerProfile extends React.Component {
 
@@ -12,6 +13,7 @@ class ContainerProfile extends React.Component {
     super(props);
     this.state = {
       error: "",
+      path: [],
       lab: {},
       container: {},
       containers: [],
@@ -19,6 +21,7 @@ class ContainerProfile extends React.Component {
       physicals: [],
       physical: {}
     };
+    this.getPath = this.getPath.bind(this);
     this.getContainer = this.getContainer.bind(this);
     this.postLab = this.postLab.bind(this);
     this.getData = this.getData.bind(this);
@@ -73,6 +76,22 @@ class ContainerProfile extends React.Component {
   onPhysicalModeChangeClick(e) {
     let physicalId = e.target.getAttribute('id');
     console.log(physicalId);
+  }
+
+  async getPath(labId, containerId) {
+    try {  
+      let request = new Request(`${appConfig.apiBaseUrl}/labs/${labId}/container/${containerId}`, {
+        method: 'GET',
+        headers: new Headers({
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let res = await fetch(request);
+      let response = res.json();
+      return response;
+    } catch (error) {
+      console.log('ContainerProfile.getContainer', error);
+    }  
   }
 
   async getContainer(containerId) {
@@ -224,13 +243,21 @@ class ContainerProfile extends React.Component {
     let containerId = this.props.match.params.containerId;
     this.getContainer(containerId)
     .then((res) => {
-      console.log('getData.res', res);
-      this.setState({
-        lab: res.data.lab,
-        container: res.data,
-        containers: res.containers,
-        physicals: res.physicals
-      });
+      //console.log('getData.res', res);
+      let lab = res.data.lab;
+      let container = res.data;
+      let containers = res.containers;
+      let physicals = res.physicals;
+      this.getPath(lab._id, container._id)
+      .then((res) => {
+        this.setState({
+          path: res.data,
+          lab,
+          container,
+          containers,
+          physicals
+        });
+      });  
     });
   }
 
@@ -575,6 +602,11 @@ class ContainerProfile extends React.Component {
                 <div className="card-header rounded-0 bg-dark text-light">
                   <h5 className="card-title mb-0 text-capitalize">Containers ({containers.length})</h5>
                 </div>
+                <Breadcrumbs 
+                  path={this.state.path}
+                  lab={this.state.lab}
+                  item={this.state.container}
+                />
                 {(containers.length > 0) ? (
                   <ul className="list-group list-group-flush">
                     {containers}
