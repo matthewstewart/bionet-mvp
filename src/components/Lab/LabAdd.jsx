@@ -159,14 +159,16 @@ class LabAdd extends React.Component {
     }
 
     let labPhysicals = [];
-    if (this.state.physicals && this.state.physicals.length){
-      for(let i = 0; i < this.state.physicals.length; i++){
-        let physical = this.state.physicals[i];
+    if (this.props.physicals && this.props.physicals.length){
+      for(let i = 0; i < this.props.physicals.length; i++){
+        let physical = this.props.physicals[i];
         if (physical.lab){
-          console.log(physical.lab._id, lab._id);
+          //console.log('Physical Match', physical.lab._id, lab._id);
           if (physical.lab._id === lab._id && physical.parent === null){
-            console.log('match',physical.lab._id, lab._id);
+            //console.log('match',physical.lab._id, lab._id);
             labPhysicals.push(physical);
+          } else {
+            //console.log('no match', physical.lab._id, lab._id);
           }
         }  
       }
