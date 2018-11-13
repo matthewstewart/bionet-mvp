@@ -4,6 +4,7 @@ import shortid from 'shortid';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
+import Containers from '../Container/Containers';
 import Physicals from '../Physical/Physicals';
 import './LabProfile.css';
 
@@ -355,25 +356,6 @@ class LabProfile extends React.Component {
         }  
       }
     }
-    
-    const containers = labContainers.map((container, index) => {
-      return (
-        <div
-          key={shortid.generate()}
-          className="list-group-item list-group-item-action rounded-0"
-        >
-          <h4 className="mb-0">
-            <i className="mdi mdi-grid mr-2"/>{container.name}
-            <div className="btn-group float-right">
-              <Link 
-                to={`/containers/${container._id}`}
-                className="btn btn-sm btn-info rounded-0"
-              >View Details</Link>
-            </div>
-          </h4>
-        </div>        
-      );
-    });
 
     const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
       return (
@@ -550,22 +532,12 @@ class LabProfile extends React.Component {
               ) : null}   
             </div>
 
-              <div className="card rounded-0 mt-3">
-                <div className="card-header rounded-0 bg-dark text-light">
-                  <h5 className="card-title mb-0 text-capitalize">Containers ({containers.length})</h5>
-                </div>
-                {(containers.length > 0) ? (
-                  <ul className="list-group list-group-flush">
-                    {containers}
-                  </ul>
-                ) : (
-                  <div className="card-body">
-                    <p className="card-text">
-                      There are currently no Containers in {lab.name}.
-                    </p>
-                  </div>
-                )}  
-              </div>  
+              <Containers 
+                containers={labContainers} 
+                currentUser={this.props.currentUser}
+                refresh={this.props.refresh}
+                physicals={labPhysicals}                
+              /> 
 
               <Physicals 
                 physicals={labPhysicals} 
