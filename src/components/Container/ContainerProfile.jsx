@@ -4,6 +4,7 @@ import shortid from 'shortid';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
+import Physicals from '../Physical/Physicals';
 
 class ContainerProfile extends React.Component {
 
@@ -400,26 +401,6 @@ class ContainerProfile extends React.Component {
       );
     });
 
-    const physicals = labPhysicals.map((physical, index) => {
-      return (
-        <div 
-          key={shortid.generate()}
-          className="list-group-item list-group-item-action rounded-0"
-          to={`/physicals/${physical._id}`}
-        >
-          <h4 className="mb-0">
-            <i className="mdi mdi-flask mr-2"/>{physical.name}
-            <div className="btn-group float-right">
-              <Link 
-                to={`/physicals/${physical._id}`}
-                className="btn btn-sm btn-info rounded-0"
-              >View Details</Link>
-            </div>
-          </h4>
-        </div>        
-      );
-    });
-
     const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
       return (
         <div 
@@ -607,22 +588,11 @@ class ContainerProfile extends React.Component {
                 )}  
               </div> 
               
-              <div className="card rounded-0 mt-3">
-                <div className="card-header rounded-0 bg-dark text-light">
-                  <h5 className="card-title mb-0 text-capitalize">Physical Samples ({physicals.length})</h5>
-                </div>
-                {(physicals.length > 0) ? (
-                  <ul className="list-group list-group-flush">
-                    {physicals}
-                  </ul>
-                ) : (
-                  <div className="card-body">
-                    <p className="card-text">
-                      There are currently no Physical Samples in {this.state.container.name}.
-                    </p>
-                  </div>
-                )}  
-              </div>   
+              <Physicals 
+                physicals={this.state.physicals} 
+                currentUser={this.props.currentUser}
+                refresh={this.props.refresh}
+              />   
 
           </div>
 
