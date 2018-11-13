@@ -152,7 +152,7 @@ function Cell(props) {
         ></div>
       ) : (
         <>
-          {(cellType="Physical") ? (
+          {(cellType === "Physical") ? (
             <div
               key={shortid.generate()}
               id={props.item._id}
