@@ -42,3 +42,7 @@ button.dropdown-item:hover {
 .rbt-menu.dropdown-menu {
 	border-radius: 0px;
 }
+
+ol.breadcrumb {
+	margin-bottom: 0;
+}
