@@ -8,6 +8,7 @@ class Breadcrumbs extends Component {
     const path = this.props.path || [];
     const breadcrumbs = path.map((breadcrumb, index) => {
       if (index !== 0 && index !== path.length - 1){
+        console.log(breadcrumb);
         return (
           <li 
             key={shortid.generate()}

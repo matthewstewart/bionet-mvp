@@ -3,6 +3,10 @@ import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
 //import { Link } from 'react-router-dom';
 import shortid from 'shortid';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
+import Grid from '../Grid/Grid';
 
 class Physicals extends Component {
 
@@ -13,7 +17,10 @@ class Physicals extends Component {
       physicals: [],
       physical: {},
       physicalForm: {},
-      virtualForm: {}
+      virtualForm: {},
+      currentParent: {},
+      newParent: {},
+      newItemLocations: []
     };
     this.updatePhysical = this.updatePhysical.bind(this);
     this.deletePhysical = this.deletePhysical.bind(this);
@@ -21,14 +28,26 @@ class Physicals extends Component {
     this.deleteVirtual = this.deleteVirtual.bind(this);
     this.onDeletePhysical = this.onDeletePhysical.bind(this);
     this.onDeleteVirtual = this.onDeleteVirtual.bind(this);
+    this.addLocation = this.addLocation.bind(this);
+    this.removeLocation = this.removeLocation.bind(this);
+    this.updateLocation = this.updateLocation.bind(this);
     this.onChangeMode = this.onChangeMode.bind(this);
     this.changeMode = this.changeMode.bind(this);
+    this.handleNewParentChange = this.handleNewParentChange.bind(this);
     this.updatePhysicalField = this.updatePhysicalField.bind(this);
     this.submitPhysicalForm = this.submitPhysicalForm.bind(this);
     this.handlePhysicalFormSubmit = this.handlePhysicalFormSubmit.bind(this);
     this.updateVirtualField = this.updateVirtualField.bind(this);
     this.submitVirtualForm = this.submitVirtualForm.bind(this);
     this.handleVirtualFormSubmit = this.handleVirtualFormSubmit.bind(this);
+  }
+
+  handleNewParentChange(selectedArray) {
+    let newParent = selectedArray[0] || {};
+    this.setState({
+      newParent,
+      mode: "Move Step 2"
+    });
   }
 
   async updatePhysical(formData) {
@@ -105,6 +124,54 @@ class Physicals extends Component {
     } catch (error) {
       console.log('Physicals.deleteVirtual', error);
     }   
+  }
+
+  addLocation(newLocationArray) {
+    //console.log('add location called');
+    let locations = this.state.newItemLocations;
+    let locationExists = false;
+    for(let i = 0; i < locations.length; i++){
+      let locationArray = locations[i];
+      if (locationArray[0] === newLocationArray[0] && locationArray[1] === newLocationArray[1]) {
+        locationExists = true;
+      }
+    }
+    if (!locationExists) {
+      locations.push(newLocationArray);
+    }
+    this.setState({
+      newItemLocations: locations
+    });
+  }
+
+  removeLocation(locationArrayToRemove) {
+    //console.log('remove location called', locationArrayToRemove);
+    let locations = this.state.newItemLocations;
+    //console.log('Locations', locations);
+    let updatedLocations = [];
+    for(let i = 0; i < locations.length; i++){
+      let locationArray = locations[i];
+      let firstIndexMatches = locationArray[0] === locationArrayToRemove[0];
+      let secondIndexMatches = locationArray[1] === locationArrayToRemove[1];
+      let isMatch = firstIndexMatches && secondIndexMatches;
+      if (!isMatch) {
+        updatedLocations.push(locationArray);
+      }
+    }
+    //console.log('Update Locations', updatedLocations);
+    this.setState({
+      newItemLocations: updatedLocations
+    });
+  }
+
+  updateLocation() {
+    let physical = this.state.physical;
+    physical.parent = this.state.newParent._id;
+    physical.locations = this.state.newItemLocations;
+    this.updatePhysical(physical)
+    .then((res) => {
+      this.props.refresh(this.props.currentUser);
+    });
   }
 
   onDeletePhysical() {
@@ -212,6 +279,7 @@ class Physicals extends Component {
     const physicals = this.props.physicals || [];
     const physical = this.state.physical;
     const virtual = this.state.virtual;
+    const containers = this.props.containers || [];
 
     let title;
     let titleClasses = "mdi mdi-flask mr-2";
@@ -255,11 +323,37 @@ class Physicals extends Component {
                 className="btn btn-sm btn-info rounded-0"
                 onClick={this.onChangeMode}
               >View Details</div>
-            </div>
+              <div 
+                id={thisPhysical._id}
+                mode='Move Step 1'
+                className="btn btn-sm btn-primary rounded-0"
+                onClick={this.onChangeMode}
+              >Move</div>
+            </div>  
           </h4>
         </div>        
       );
     });
+
+    let allParentOptions = [physical.lab].concat(containers);
+    let newParentOptions = [];
+    if(Object.keys(physical).length > 0 && containers.length > 0) {
+      if (containers && containers.length > 0) {
+        for (let i = 0; i < allParentOptions.length; i++){
+          let option = allParentOptions[i];
+          if (i === 0) { // first entry is lab
+            if (this.state.currentParent !== null) {
+              //console.log(physical);
+              //newParentOptions.push(option);
+            }
+          }
+          //console.log(option);
+          if (option._id !== physical._id) {
+            newParentOptions.push(option);
+          }
+        }
+      }
+    } 
 
     return (
       <div className="card rounded-0 mt-3 mb-3">
@@ -538,6 +632,69 @@ class Physicals extends Component {
             </div>
           </div>
         ) : null }        
+
+        {(mode === 'Move Step 1') ? (
+          <div className="card-body">
+            <p className="card-text">
+              What container would you like to move {physical.name} to?
+            </p>
+            <form onSubmit={this.onFormSubmit}>
+              <div className="form-group">
+                <label htmlFor="newparent">New Location:</label>
+                <Typeahead
+                  labelKey="name"
+                  name="newparent"
+                  onChange={(selected) => {this.handleNewParentChange(selected)}}
+                  onPaginate={(e) => console.log('Results paginated')}
+                  options={newParentOptions}
+                  paginate={true}
+                  placeholder="Select New Location"
+                  className="border-0"
+                  maxResults={50}
+                />
+              </div>
+            </form>  
+          </div>
+        ) : null }  
+
+        {(mode === 'Move Step 2') ? (
+          <div className="card-body">
+            <p className="card-text">
+              Where would you like to move {physical.name} to within {this.state.newParent.name}?<br/>
+              Click on an empty location within {this.state.newParent.name}.<br/>
+              Click on your selected location to unselect.
+            </p>
+            {(this.state.newItemLocations.length > 0) ? (
+              <>
+                <p className="card-text">
+                  Move {physical.name} to {this.state.newParent.name} Column {this.state.newItemLocations[0][0]} Row {this.state.newItemLocations[0][1]} ?  
+                </p>
+                <div className="btn-group mb-3">
+                  <button 
+                    className="btn btn-success rounded-0"
+                    onClick={this.updateLocation}
+                  >Yes, Move {physical.name}</button> 
+                  <button 
+                    className="btn btn-secondary rounded-0"
+                    onClick={this.onMoveCancel}
+                  >Cancel</button>
+                </div>
+              </> 
+            ) : null }
+            <Grid 
+              demo={false}
+              selectLocations={true}
+              selectSingle={true}
+              newItemLocations={this.state.newItemLocations}
+              addLocation={this.addLocation}
+              removeLocation={this.removeLocation}
+              recordType="Container"
+              record={Object.keys(this.state.newParent).length > 0 ? this.state.newParent : this.state.container}
+              containers={this.props.containers}
+              physicals={this.props.physicals}
+            />
+          </div>
+        ) : null } 
 
       </div>
     );

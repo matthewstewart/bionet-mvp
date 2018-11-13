@@ -244,15 +244,24 @@ class ContainerProfile extends React.Component {
     let containerId = this.props.match.params.containerId;
     this.getContainer(containerId)
     .then((res) => {
-      //console.log('getData.res', res);
-      let lab = res.data.lab;
+      //console.log('ContainerProfile.getData.res', res);
+      let lab; 
+      lab = res.data.lab;
       let container = res.data;
       let containers = res.containers;
       let physicals = res.physicals;
       this.getPath(lab._id, container._id)
       .then((res) => {
+        //console.log('ContainerProfile.getPath.res', res);
+        let pathArray = res.data;
+        let path = [];
+        for(let i = 0; i < pathArray.length; i++){
+          if (pathArray[i] !== null) {
+            path.push(pathArray[i]);
+          }
+        }
         this.setState({
-          path: res.data,
+          path,
           lab,
           container,
           containers,
@@ -558,11 +567,13 @@ class ContainerProfile extends React.Component {
               </div>
               {(isLoggedIn) ? (
                 <>
-                  <Breadcrumbs 
-                    path={this.state.path}
-                    lab={this.state.lab}
-                    item={this.state.container}
-                  />
+                  {(this.state.path.length > 0) ? (
+                    <Breadcrumbs 
+                      path={this.state.path}
+                      lab={this.state.lab}
+                      item={this.state.container}
+                    />
+                  ) : null }
                   <div className="card-body">
                     {(this.state.error.length > 0) ? (
                       <p className="card-text text-danger">
@@ -594,6 +605,7 @@ class ContainerProfile extends React.Component {
               /> 
               
               <Physicals 
+                containers={this.state.containers} 
                 physicals={this.state.physicals} 
                 currentUser={this.props.currentUser}
                 refresh={this.props.refresh}
