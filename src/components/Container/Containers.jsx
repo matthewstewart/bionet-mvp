@@ -243,9 +243,9 @@ class Containers extends Component {
                   maxResults={50}
                 />
                 <button 
-                    className="btn btn-secondary rounded-0"
-                    onClick={this.onMoveCancel}
-                  >Cancel</button>
+                  className="btn btn-secondary rounded-0 mt-3"
+                  onClick={this.onMoveCancel}
+                >Cancel Move</button>
               </div>
             </form>  
           </div>
@@ -258,6 +258,10 @@ class Containers extends Component {
               Click on an empty location within {this.state.newParent.name}.<br/>
               Click on your selected location to unselect.
             </p>
+            <button 
+              className="btn btn-secondary rounded-0 mt-3"
+              onClick={this.onMoveCancel}
+            >Cancel Move</button>
             {(this.state.newItemLocations.length > 0) ? (
               <>
                 <p className="card-text">
@@ -271,7 +275,7 @@ class Containers extends Component {
                   <button 
                     className="btn btn-secondary rounded-0"
                     onClick={this.onMoveCancel}
-                  >Cancel</button>
+                  >Cancel Move</button>
                 </div>
               </> 
             ) : null }
