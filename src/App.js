@@ -12,6 +12,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 
 const Landing = lazy(() => import('./components/Landing'));
+
 const LabProfile = lazy(() => import('./components/Lab/LabProfile'));
 const LabNew = lazy(() => import('./components/Lab/LabNew'));
 const LabAdd = lazy(() => import('./components/Lab/LabAdd'));
@@ -21,6 +22,7 @@ const LabDelete = lazy(() => import('./components/Lab/LabDelete'));
 const ContainerProfile = lazy(() => import('./components/Container/ContainerProfile'));
 const ContainerAdd = lazy(() => import('./components/Container/ContainerAdd'));
 const ContainerEdit = lazy(() => import('./components/Container/ContainerEdit'));
+const ContainerDelete = lazy(() => import('./components/Container/ContainerDelete'));
 
 function WaitForComponent(Component, state, refreshMethod) {
   return props => (
@@ -219,6 +221,7 @@ class App extends React.Component {
           <Switch>
             <Route path='/containers/:containerId/add/:itemType' component={WaitForComponent(ContainerAdd, this.state, this.getCurrentUserLabs)}/>
             <Route path="/containers/:containerId/edit" exact component={WaitForComponent(ContainerEdit, this.state, this.getCurrentUserLabs)}/>
+            <Route path='/containers/:containerId/delete' component={WaitForComponent(ContainerDelete, this.state, this.getCurrentUserLabs)}/>
             <Route path="/containers/:containerId" exact component={WaitForComponent(ContainerProfile, this.state, this.getCurrentUserLabs)}/>
           </Switch>  
 

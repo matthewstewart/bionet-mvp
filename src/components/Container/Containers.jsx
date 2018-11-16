@@ -242,6 +242,10 @@ class Containers extends Component {
                   className="border-0"
                   maxResults={50}
                 />
+                <button 
+                    className="btn btn-secondary rounded-0"
+                    onClick={this.onMoveCancel}
+                  >Cancel</button>
               </div>
             </form>  
           </div>
