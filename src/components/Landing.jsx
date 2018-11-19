@@ -1,15 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import shortid from 'shortid';
 import Search from './Search/Search';
+import { ContainerFluid, Row, Column } from './Bootstrap/layout';
+import { Card, CardHeader, CardTitle, CardBody, CardText, CardList, CardListLink } from './Bootstrap/components';
 
 class Landing extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
+    this.state = {};
   }
 
   render() {
@@ -17,123 +16,129 @@ class Landing extends React.Component {
     const currentUser = this.props.currentUser;
     const labsJoined = isLoggedIn ? currentUser.labs.map((lab, index) => {
       return (
-        <Link 
+        <CardListLink 
           key={shortid.generate()}
-          className="list-group-item list-group-item-action bg-info text-light rounded-0"
+          dark
+          type="info"
           to={`/labs/${lab._id}`}
         >
           <i className="mdi mdi-teach mr-2"/>{lab.name}
-        </Link>
+        </CardListLink>
       )
     }) : [];
     const labsRequested = isLoggedIn ? currentUser.labsRequested.map((lab, index) => {
       return (
-        <Link 
+        <CardListLink 
           key={shortid.generate()}
-          className="list-group-item list-group-item-action bg-info text-light rounded-0"
+          dark
+          type="info"
           to={`/labs/${lab._id}`}
         >
           <i className="mdi mdi-teach mr-2"/>{lab.name}
-        </Link>
+        </CardListLink>
       )
     }) : []; 
     const labsToJoin = isLoggedIn ? currentUser.labsToJoin.map((lab, index) => {
       return (
-        <Link 
+        <CardListLink 
           key={shortid.generate()}
-          className="list-group-item list-group-item-action bg-info text-light rounded-0"
+          dark
+          type="info"
           to={`/labs/${lab._id}`}
         >
           <i className="mdi mdi-teach mr-2"/>{lab.name}
-        </Link>
+        </CardListLink>
       )
     }) : [];    
     return (
-      <div className="Landing container-fluid">
-        
-        <div className="row">
-          <div className="col-12 col-lg-7">
+      <ContainerFluid className="Landing">  
+        <Row>
+          <Column col="12" colLg="7">
             {(isLoggedIn) ? (
-              <div className="card rounded-0 mt-3 mb-3">
-                <div className="card-header rounded-0 bg-dark text-light">
-                  <h4 className="card-title mb-0 text-capitalize">Welcome Back To BioNet {currentUser.username}</h4>
-                </div>
+              <Card className="mt-3 mb-3">
+                <CardHeader dark>
+                  <CardTitle>Welcome Back To BioNet {currentUser.username}</CardTitle>
+                </CardHeader>
             
-                  
-                <div className="card-body">
+                <CardBody>
                   <img 
                     src={currentUser.gravatarUrl} 
                     className="user-img rounded d-block float-left" 
                     alt={`${currentUser.username}`}
                   />
                   <div className="d-block float-left ml-3">
-                    <p className="card-text">
+                    <CardText>
                       You currently belong to {currentUser.labs.length} {currentUser.labs.length === 1 ? "Lab" : "Labs"}.
-                    </p>  
+                    </CardText>  
                   </div>
-                </div>
+                </CardBody>
 
-                <div className="card-header rounded-0 bg-dark text-light">
-                  <h5 className="card-title mb-0 text-capitalize">Your {currentUser.labs.length === 1 ? "Lab" : "Labs"} ({currentUser.labs.length})</h5>
-                </div>                  
-                <ul className="list-group list-group-flush">
+                <CardHeader dark>
+                  <CardTitle small>
+                    Your {currentUser.labs.length === 1 ? "Lab" : "Labs"} ({currentUser.labs.length})
+                  </CardTitle>
+                </CardHeader>                 
+                <CardList>
                   {labsJoined}
-                  <Link
+                  <CardListLink
                     to="/labs/new"
-                    className="list-group-item list-group-item-action bg-success text-light rounded-0"
+                    dark
+                    type="success"
                   >
                     <i className="mdi mdi-plus mr-2"/>Create New Lab
-                  </Link>
-                </ul>
+                  </CardListLink>
+                </CardList>
 
-                <div className="card-header rounded-0 bg-dark text-light">
-                  <h5 className="card-title mb-0 text-capitalize">Pending Lab {currentUser.labsRequested.length === 1 ? "Request" : "Requests"} ({currentUser.labsRequested.length})</h5>
-                </div>
+                <CardHeader dark>
+                  <CardTitle small>
+                    Pending Lab {currentUser.labsRequested.length === 1 ? "Request" : "Requests"} ({currentUser.labsRequested.length})
+                  </CardTitle>
+                </CardHeader>
                 {(currentUser.labsRequested.length > 0) ? (
-                  <ul className="list-group list-group-flush">
+                  <CardList>
                     {labsRequested}
-                  </ul>
+                  </CardList>
                 ) : (
-                  <div className="card-body">
-                    <p className="card-text">
+                  <CardBody>
+                    <CardText>
                       You currently have no pending lab membership requests. Try requesting membership from one of the labs listed below.
-                    </p>
-                  </div>
+                    </CardText>
+                  </CardBody>
                 )}          
 
 
-                <div className="card-header rounded-0 bg-dark text-light">
-                  <h5 className="card-title mb-0 text-capitalize">Other Labs ({labsToJoin.length})</h5>
-                </div>
+                <CardHeader dark>
+                  <CardTitle small>Other Labs ({labsToJoin.length})</CardTitle>
+                </CardHeader>
                 {(labsToJoin.length > 0) ? (
-                  <ul className="list-group list-group-flush">
+                  <CardList>
                     {labsToJoin}
-                  </ul>
+                  </CardList>
                 ) : (
-                  <div className="card-body">
-                    <p className="card-text">
+                  <CardBody>
+                    <CardText>
                       There are currently no other labs listed to join.
-                    </p>
-                  </div>
+                    </CardText>
+                  </CardBody>
                 )}                  
               
-              </div>
+              </Card>
             ) : (
-              <div className="card rounded-0 mt-3 mb-3">
-                <div className="card-header rounded-0 bg-dark text-light">
-                  <h4 className="card-title mb-0 text-capitalize">Welcome To BioNet</h4>
-                </div>
-                <div className="card-body">
-                  <p className="card-text">Welcome To BioNet</p>
-                </div>
-              </div>
+              <Card className="mt-3 mb-3">
+                <CardHeader dark>
+                  <CardTitle>Welcome To BioNet</CardTitle>
+                </CardHeader>
+                <CardBody>
+                  <CardText>Welcome To BioNet</CardText>
+                </CardBody>
+              </Card>
             )}
-          </div>
-          <div className="col-12 col-lg-5">
+          </Column>
+          <Column col="12" colLg="5">
             <Search {...this.state} {...this.props}/>
-          </div>
-        </div>
-      </div>
+          </Column>
+        </Row>
+      </ContainerFluid>
     );
   }
 }
