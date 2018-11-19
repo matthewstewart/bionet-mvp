@@ -304,7 +304,7 @@ export const NavbarBrand = class NavbarBrand extends Component {
           <>
             <img 
               src={this.props.imgSrc} 
-              width="30" 
+              width={this.props.width || "30"} 
               height="30" 
               alt={this.props.imgAlt}
               className="mr-3"
@@ -339,7 +339,7 @@ export const NavbarNav = class NavbarNav extends Component {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className={classes} id="navbarNav">
-          <ul className="navbar-nav">
+          <ul className="navbar-nav ml-auto">
             {this.props.children}
           </ul>
         </div>
@@ -401,4 +401,16 @@ export const NavbarDropdownLink = class NavbarDropdownLink extends Component {
       </NavLink>
     );
   }      
+}
+
+export const NavTabs = class NavTabs extends Component {
+  render() {
+    let classes = "nav nav-tabs";
+    if (this.props.className) { classes += ` ${this.props.className}` }
+    return (
+      <ul className={classes}>
+        {this.props.children}
+      </ul>
+    );    
+  }
 }
