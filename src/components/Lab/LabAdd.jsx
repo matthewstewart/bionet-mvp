@@ -6,7 +6,7 @@ import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import ContainerNewForm from '../Container/ContainerNewForm';
 import PhysicalNewForm from '../Physical/PhysicalNewForm';
-import './LabProfile.css';
+//import './LabProfile.css';
 
 class LabAdd extends React.Component {
 
