@@ -387,7 +387,7 @@ class Grid extends Component {
             {this.props.record.name || `(Select A ${this.props.recordType} Name)`}
           </h4>
         </div>
-        <div className="card-body" style={{'overflow': 'scroll'}}>
+        <div className="card-body" style={{'maxHeight': '70vh', 'overflow': 'scroll'}}>
           <GridContainer 
             selectCell={this.selectCell}
             containers={this.props.containers}
