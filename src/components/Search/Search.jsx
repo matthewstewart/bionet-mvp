@@ -1,7 +1,7 @@
 import React from 'react';
 //import { Link } from 'react-router-dom';
-//import shortid from 'shortid';
-import { Card, CardHeader, CardTitle, CardBody, CardText } from '../Bootstrap/components';
+import shortid from 'shortid';
+import { Card, CardHeader, CardTitle, CardBody, CardText, CardList, CardListLink } from '../Bootstrap/components';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
@@ -12,17 +12,29 @@ class Search extends React.Component {
     super(props);
     this.state = {
       selected: {},
-      fullSequence: false
+      fullSequence: false,
+      physicals: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.toggleFullSequence = this.toggleFullSequence.bind(this);
   }
 
   handleChange(selectedArray) {
+    let allPhysicals = this.props.physicals;
     let selected = selectedArray[0];
-    console.log(selected);
+    console.log('selected', selected);
+    //console.log('allPhysicals', allPhysicals);
+    let physicals = [];
+    for(let i = 0; i < allPhysicals.length; i++){
+      let physical = allPhysicals[i];
+      if (selected && physical.virtual && physical.virtual._id === selected._id){
+        physicals.push(physical);
+      }
+    }
+    console.log('physicals', physicals);
     this.setState({
-      selected
+      selected,
+      physicals
     });
   }
 
@@ -38,6 +50,20 @@ class Search extends React.Component {
     const virtuals = this.props.virtuals;
     const virtualIsSelected = this.state.selected && Object.keys(this.state.selected).length > 0;
     const virtualSelected = this.state.selected;
+
+    const physicals = this.state.physicals.map((physical) => {
+      return (
+        <CardListLink 
+          key={shortid.generate()}
+          dark
+          type="info"
+          to={`/containers/${physical.parent._id}`}
+        >
+          <i className="mdi mdi-flask mr-2"/>{physical.name}
+        </CardListLink>
+      );
+    });
+
     return (
       <>
         <Card className="Search mt-3">
@@ -83,13 +109,16 @@ class Search extends React.Component {
                 Provenance: {virtualSelected.provenance}<br/>
                 Genotype: {virtualSelected.genotype}<br/>
                 Sequence: 
-                <Sequence 
-                  fullSequence={this.state.fullSequence} 
-                  virtual={virtualSelected}
-                  toggleFullSequence={this.toggleFullSequence}
-                />
               </CardText>
+              <Sequence 
+                fullSequence={this.state.fullSequence} 
+                virtual={virtualSelected}
+                toggleFullSequence={this.toggleFullSequence}
+              />
             </CardBody>
+            <CardList>
+              {physicals}
+            </CardList>
           </Card>
         ) : null }  
       </>
