@@ -11,9 +11,11 @@ class Search extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: {}
+      selected: {},
+      fullSequence: false
     };
     this.handleChange = this.handleChange.bind(this);
+    this.toggleFullSequence = this.toggleFullSequence.bind(this);
   }
 
   handleChange(selectedArray) {
@@ -21,6 +23,12 @@ class Search extends React.Component {
     console.log(selected);
     this.setState({
       selected
+    });
+  }
+
+  toggleFullSequence() {
+    this.setState({
+      fullSequence: !this.state.fullSequence
     });
   }
 
@@ -74,7 +82,12 @@ class Search extends React.Component {
                 Available: {virtualSelected.isAvailable ? "Yes" : "No"}<br/>
                 Provenance: {virtualSelected.provenance}<br/>
                 Genotype: {virtualSelected.genotype}<br/>
-                Sequence: {virtualSelected.sequence}<br/>
+                Sequence: 
+                <Sequence 
+                  fullSequence={this.state.fullSequence} 
+                  virtual={virtualSelected}
+                  toggleFullSequence={this.toggleFullSequence}
+                />
               </CardText>
             </CardBody>
           </Card>
@@ -86,7 +99,25 @@ class Search extends React.Component {
 
 export default Search;
 
-// function range(start, end) {
-//   if(start === end) return [start];
-//   return [start, ...range(start + 1, end)];
-// }
+function Sequence(props) {
+  return (
+    <>
+      {(props.fullSequence) ? (
+        <>
+          <div>{props.virtual.sequence}</div>
+          <div className="btn btn-sm btn-primary ml-3" onClick={props.toggleFullSequence}>Collapse</div>
+        </>
+      ) : (
+        <div>
+          {truncString(props.virtual.sequence, 80)}
+          <div className="btn btn-sm btn-primary ml-3" onClick={props.toggleFullSequence}>Expand</div>
+        </div>
+      )}
+    </>
+  );
+};
+
+function truncString(str, len) {
+  return (str.length > len) ? str.substr(0, len - 1) + '...' : str;
+}
+
