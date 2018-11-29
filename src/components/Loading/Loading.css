@@ -3,6 +3,10 @@
   text-align: center;
 }
 
+.loading-container {
+  height: calc(100vh - 60px - 60px - 45px);
+}
+
 .loader-title {
   margin-top: 15px;
 }

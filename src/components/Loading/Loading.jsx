@@ -7,10 +7,7 @@ class Loading extends Component {
     return ( 
       <div className="Loading">
         <div className="container-fluid">
-          <div 
-            className="loading-container row justify-content-center align-items-center"
-            style={{'height': 'calc(100vh - 65px - 65px)'}}
-          >      
+          <div className="loading-container row justify-content-center align-items-center">      
             <div className="Loader">
               <img src={Loader} className="preLoader" alt="Loading" />
               <h3 className="loader-title">Loading BioNet</h3>

@@ -1,5 +1,5 @@
 .App .viewport-container {
-	display:table;
+	/* display:table; */
 	width:100%;
 	background: linear-gradient( rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.0) ), url('./images/biobricks-bkg.jpg');
 	background-position: center;
@@ -8,6 +8,7 @@
   min-height: calc(100vh - 60px - 60px - 5px);
   padding: 16px 0;
 }
+
 
 .card {
   border-color: rgb(4, 32, 13);

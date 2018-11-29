@@ -20,7 +20,7 @@ class Landing extends React.Component {
     return (
       <ContainerFluid className="Landing">  
         <Row>
-          <Column col="12" colLg="7">
+          <div className="col-12 col-lg-7">
             {(isLoggedIn) ? (
               <Card className="mt-3 mb-3">
                 <CardHeader dark className="bg-dark-green">
@@ -64,10 +64,10 @@ class Landing extends React.Component {
                 </CardBody>
               </Card>
             )}
-          </Column>
-          <Column col="12" colLg="5">
+          </div>
+          <div className="col-12 col-lg-5">
             <Search {...this.props}/>
-          </Column>
+          </div>
         </Row>
       </ContainerFluid>
     );

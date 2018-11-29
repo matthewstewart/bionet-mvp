@@ -27,7 +27,7 @@ const ContainerDelete = lazy(() => import('./components/Container/ContainerDelet
 function WaitForComponent(Component, state, refreshMethod) {
   return props => (
     <ErrorBoundary>
-      <Suspense fallback={<div><Loading /></div>}>
+      <Suspense fallback={<Loading />}>
         <Component {...state} {...props} refresh={refreshMethod}/>
       </Suspense>
     </ErrorBoundary>

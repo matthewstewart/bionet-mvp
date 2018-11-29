@@ -62,7 +62,7 @@ class Search extends React.Component {
         </Card>
         
         {(virtualIsSelected) ? (
-          <Card className="Search mt-3 mb-3">
+          <Card className="search-result mt-3 mb-3">
             <CardHeader dark className="bg-dark-green">
               <h4 className="card-title mb-0 text-capitalize">
                 <i className="mdi mdi-dna mr-2"/>{virtualSelected.name}

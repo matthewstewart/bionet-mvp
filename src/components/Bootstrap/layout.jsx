@@ -41,7 +41,7 @@ export const Column = class Column extends Component {
     if (this.props.col) { 
       classes += `col-${this.props.col}`
     } else {
-      classes += 'col'
+      classes += 'col-12'
     }
     if (this.props.colSm) { classes += ` col-sm-${this.props.colSm}`}
     if (this.props.colMd) { classes += ` col-md-${this.props.colMd}`}
