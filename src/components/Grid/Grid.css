@@ -1,8 +1,9 @@
 .grid-container {
   display: grid;
-  width: 100%;
+  min-width: 100%;
   border: 1px solid #ccc;
   min-height: 375px;
+  overflow: scroll;
 }
 
 .grid-container .grid-item {

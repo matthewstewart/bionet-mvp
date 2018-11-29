@@ -10,6 +10,8 @@ function GridContainer(props) {
   const gridContainerStyles = {
     'gridTemplateColumns': record ? `repeat(${record.columns}, 1fr)` : '1fr',
     'gridTemplateRows': record ? `repeat(${record.rows}, 1fr)` : '1fr',
+    'height': record ? `${record.rows * 40}px` : '0px',
+    'width': record ? `${record.columns * 40}px` : '0px',
   };
   //console.log(props)
   // create empty cells in json
@@ -84,8 +86,7 @@ function GridContainer(props) {
   return (
     <>
       <div className="grid-container dropdown" style={gridContainerStyles}>
-        { gridCells }
-        
+        { gridCells }  
       </div>
       {(props.dragging) ? ("dragging") : null}
     </>
