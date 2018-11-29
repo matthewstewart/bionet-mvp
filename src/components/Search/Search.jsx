@@ -116,9 +116,20 @@ class Search extends React.Component {
                 toggleFullSequence={this.toggleFullSequence}
               />
             </CardBody>
-            <CardList>
-              {physicals}
-            </CardList>
+            <CardHeader dark className="bg-dark-green">
+              <h4 className="card-title mb-0 text-capitalize">
+                <i className="mdi mdi-flask mr-2"/>Instances Of {virtualSelected.name}
+              </h4>
+            </CardHeader>
+            {(physicals.length > 0) ? (
+              <CardList>
+                {physicals}
+              </CardList>
+            ) : (
+              <CardBody>
+                <CardText>There are currently no physical instances of {virtualSelected.name}</CardText>
+              </CardBody>
+            )}  
           </Card>
         ) : null }  
       </>
