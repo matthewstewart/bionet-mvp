@@ -10,10 +10,10 @@
 }
 
 .card {
-  border-color: rgb(87, 104, 109);
+  border-color: rgb(4, 32, 13);
 }
 
-.bg-black {
+.bg-dark-green {
 	background-color: rgb(23,43,47) !important;
 }
 

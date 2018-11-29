@@ -1,6 +1,7 @@
 import React from 'react';
 //import { Link } from 'react-router-dom';
 //import shortid from 'shortid';
+import { Card, CardHeader, CardTitle, CardBody, CardText } from '../Bootstrap/components';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
@@ -17,6 +18,7 @@ class Search extends React.Component {
 
   handleChange(selectedArray) {
     let selected = selectedArray[0];
+    console.log(selected);
     this.setState({
       selected
     });
@@ -30,12 +32,10 @@ class Search extends React.Component {
     const virtualSelected = this.state.selected;
     return (
       <>
-        <div className="Search card rounded-0 mt-3">
-          <div className="card-header rounded-0 bg-dark text-light">
-            <h4 className="card-title mb-0 text-capitalize">
-              Search BioNet
-            </h4>
-          </div>
+        <Card className="Search mt-3">
+          <CardHeader dark className="bg-dark-green">
+            <CardTitle>Search BioNet</CardTitle>
+          </CardHeader>
           <form className="form">
             <div className="input-group rounded-0 ">
               <Typeahead
@@ -55,31 +55,29 @@ class Search extends React.Component {
             </div>
           </form>
           {(!virtualIsSelected) ? (
-            <div className="card-body">
-              Search from {virtuals.length} Virtual Samples currently on BioNet.
-            </div>
+            <CardBody>
+              <CardText>Search from {virtuals.length} Virtual Samples</CardText>
+            </CardBody>
           ) : null}  
-        </div>
+        </Card>
         
         {(virtualIsSelected) ? (
-          <div className="Search card rounded-0 mt-3 mb-3">
-            <div className="card-header rounded-0 bg-dark text-light">
+          <Card className="Search mt-3 mb-3">
+            <CardHeader dark className="bg-dark-green">
               <h4 className="card-title mb-0 text-capitalize">
                 <i className="mdi mdi-dna mr-2"/>{virtualSelected.name}
               </h4>
-            </div>
-            <div className="card-body">
-              <p className="card-text">
-                {virtualSelected.description}
-              </p>
-              <p className="card-text">
+            </CardHeader>
+            <CardBody>
+              <CardText>{virtualSelected.description}</CardText>
+              <CardText>
                 Available: {virtualSelected.isAvailable ? "Yes" : "No"}<br/>
                 Provenance: {virtualSelected.provenance}<br/>
                 Genotype: {virtualSelected.genotype}<br/>
                 Sequence: {virtualSelected.sequence}<br/>
-              </p>
-            </div>
-          </div>
+              </CardText>
+            </CardBody>
+          </Card>
         ) : null }  
       </>
     );
