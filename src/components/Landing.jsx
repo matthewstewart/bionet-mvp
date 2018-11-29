@@ -23,7 +23,7 @@ class Landing extends React.Component {
           <Column col="12" colLg="7">
             {(isLoggedIn) ? (
               <Card className="mt-3 mb-3">
-                <CardHeader dark>
+                <CardHeader>
                   <CardTitle>Welcome Back To BioNet {currentUser.username}</CardTitle>
                 </CardHeader>
             

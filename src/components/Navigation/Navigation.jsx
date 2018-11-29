@@ -21,7 +21,7 @@ class Navigation extends Component {
       )
     }) : [];
     return (
-      <Navbar dark type="dark">
+      <Navbar dark type="dark" className="bg-black">
         <NavbarBrand imgSrc={logo} imgAlt="BioNet Logo" width="40">
           BioNet
         </NavbarBrand>

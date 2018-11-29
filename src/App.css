@@ -13,6 +13,10 @@
   border-color: rgb(87, 104, 109);
 }
 
+.bg-black {
+	background-color: rgb(23,43,47) !important;
+}
+
 p.card-text {
 	font-size: 1.2em;
 }
