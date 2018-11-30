@@ -8,7 +8,7 @@ class Footer extends Component {
     
     return (
       <div className="Footer bg-dark-green text-light text-center">
-        <Link to="/about">Learn more</Link> about the BioNet.
+        <Link to="/about">Learn more</Link> about the bionet.
       </div>
     );
 

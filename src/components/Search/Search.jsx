@@ -105,7 +105,7 @@ class Search extends React.Component {
           </form>
           {(!virtualIsSelected) ? (
             <CardBody>
-              <CardText>Search from {virtuals.length} Virtual Samples</CardText>
+              <CardText>from {virtuals.length} primers, plasmids, strains, cells, samples, and more...</CardText>
             </CardBody>
           ) : null}  
         </Card>
