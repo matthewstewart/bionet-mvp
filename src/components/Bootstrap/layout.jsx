@@ -27,6 +27,7 @@ export const Row = class Row extends Component {
     if (this.props.alignItems) {
       classes += ` align-items-${this.props.alignItems}`;
     }
+    if (this.props.className) { classes += ` ${this.props.className}` }
     return (
       <div className={classes}>
         {this.props.children}
@@ -48,7 +49,7 @@ export const Column = class Column extends Component {
     if (this.props.colLg) { classes += ` col-lg-${this.props.colLg}`}
     if (this.props.colXl) { classes += ` col-xl-${this.props.colXl}`}
     if (this.props.alignSelf) { classes += ` align-self-${this.props.alignSelf}`}
-    if (this.props.addClass) { classes += ` ${this.props.addClass}` }
+    if (this.props.className) { classes += ` ${this.props.className}` }
     return (
       <div className={classes}>
         {this.props.children}

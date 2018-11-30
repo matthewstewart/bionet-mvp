@@ -17,6 +17,7 @@ class Search extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.toggleFullSequence = this.toggleFullSequence.bind(this);
+    this.getRandomVirtual = this.getRandomVirtual.bind(this);
   }
 
   handleChange(selectedArray) {
@@ -36,6 +37,13 @@ class Search extends React.Component {
       selected,
       physicals
     });
+  }
+
+  getRandomVirtual() {
+    let virtuals = this.props.virtuals;
+    let index = getRandomInt(0, virtuals.length);
+    let virtual = virtuals[index];
+    console.log(virtual);
   }
 
   toggleFullSequence() {
@@ -66,12 +74,12 @@ class Search extends React.Component {
 
     return (
       <>
-        <Card className="Search mt-3">
+        <Card className="Search text-center">
           <CardHeader dark className="bg-dark-green">
-            <CardTitle>Search BioNet</CardTitle>
+            <CardTitle><i className="mdi mdi-dna mr-2"/>Search</CardTitle>
           </CardHeader>
           <form className="form">
-            <div className="input-group rounded-0 ">
+            <div className="input-group rounded-0" id="search-input">
               <Typeahead
                 labelKey="name"
                 name="search"
@@ -79,12 +87,19 @@ class Search extends React.Component {
                 onPaginate={(e) => console.log('Results paginated')}
                 options={virtuals}
                 paginate={true}
-                placeholder="Search BioNet"
+                placeholder="<type here>"
                 className="border-0"
                 maxResults={50}
               />
               <div className="input-group-append">
-                <button className="btn btn-info rounded-0" type="button" id="search-submit" disabled={true}>Search</button>
+                <button 
+                  className="btn btn-warning rounded-0" 
+                  type="button" 
+                  id="feeling-random"
+                  onClick={this.getRandomVirtual}
+                >
+                  <i className="mdi mdi-dice-multiple mr-2"/>Feeling Random
+                </button>
               </div>
             </div>
           </form>
@@ -96,7 +111,7 @@ class Search extends React.Component {
         </Card>
         
         {(virtualIsSelected) ? (
-          <Card className="search-result mt-3 mb-3">
+          <Card className="search-result mt-3 mb-3 text-center">
             <CardHeader dark className="bg-dark-green">
               <h4 className="card-title mb-0 text-capitalize">
                 <i className="mdi mdi-dna mr-2"/>{virtualSelected.name}
@@ -161,3 +176,8 @@ function truncString(str, len) {
   return (str.length > len) ? str.substr(0, len - 1) + '...' : str;
 }
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}

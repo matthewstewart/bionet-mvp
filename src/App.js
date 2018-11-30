@@ -12,6 +12,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 
 const Landing = lazy(() => import('./components/Landing'));
+const About = lazy(() => import('./components/About'));
 
 const LabProfile = lazy(() => import('./components/Lab/LabProfile'));
 const LabNew = lazy(() => import('./components/Lab/LabNew'));
@@ -228,6 +229,7 @@ class App extends React.Component {
           <Switch>
             <Route path="/signup" exact render={(props) => (<Signup {...props} {...this.state}/>)}/>
             <Route path="/login" exact render={(props) => (<Login {...props} {...this.state} setCurrentUser={this.setCurrentUser}/>)}/>
+            <Route path="/about" exact component={WaitForComponent(About, this.state)}/>
             <Route path="/" exact component={WaitForComponent(Landing, this.state)}/>
           </Switch>
 

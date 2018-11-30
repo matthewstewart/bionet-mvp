@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 class Footer extends Component {
@@ -7,7 +8,7 @@ class Footer extends Component {
     
     return (
       <div className="Footer bg-dark-green text-light text-center">
-        <a href="https://bionet.io/">The BioNet</a> is a project of <a href="https://biobricks.org/">The BioBricks Foundation.</a>
+        <Link to="/about">Learn more</Link> about the BioNet.
       </div>
     );
 
