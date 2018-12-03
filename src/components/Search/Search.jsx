@@ -23,7 +23,7 @@ class Search extends React.Component {
   handleChange(selectedArray) {
     let allPhysicals = this.props.physicals;
     let selected = selectedArray[0];
-    console.log('selected', selected);
+    //console.log('selected', selected);
     //console.log('allPhysicals', allPhysicals);
     let physicals = [];
     for(let i = 0; i < allPhysicals.length; i++){
@@ -32,7 +32,7 @@ class Search extends React.Component {
         physicals.push(physical);
       }
     }
-    console.log('physicals', physicals);
+    //console.log('physicals', physicals);
     this.setState({
       selected,
       physicals
@@ -41,9 +41,11 @@ class Search extends React.Component {
 
   getRandomVirtual() {
     let virtuals = this.props.virtuals;
-    let index = getRandomInt(0, virtuals.length);
-    let virtual = virtuals[index];
-    console.log(virtual);
+    let index = getRandomInt(0, virtuals.length - 1);
+    //console.log(index);
+    let selected = virtuals[index];
+    //console.log(virtual);
+    this.setState({selected});
   }
 
   toggleFullSequence() {
@@ -84,12 +86,13 @@ class Search extends React.Component {
                 labelKey="name"
                 name="search"
                 onChange={(selected) => {this.handleChange(selected)}}
-                onPaginate={(e) => console.log('Results paginated')}
+                // onPaginate={(e) => console.log('Results paginated')}
                 options={virtuals}
-                paginate={true}
+                // paginate={true}
                 placeholder="<type here>"
                 className="border-0"
                 maxResults={50}
+                selected={virtualIsSelected > 0 ? [this.state.selected] : []}
               />
               <div className="input-group-append">
                 <button 
