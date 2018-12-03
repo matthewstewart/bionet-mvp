@@ -197,13 +197,13 @@ export const CardTitle = class CardTitle extends Component {
   render() {
     let classes = "card-title mb-0 text-capitalize";
     if (this.props.className) { classes += ` ${this.props.className}` }
-    if (this.props.small) {
+    if (this.props.noHeading) {
       return (
-        <h5
+        <div
           className={classes}
         >
           {this.props.children}
-        </h5>
+        </div>
       );
     } else {
       return (

@@ -1,6 +1,9 @@
 import React from 'react';
 import shortid from 'shortid';
+import { Link } from 'react-router-dom';
 import Auth from "../../modules/Auth";
+import { Card, CardHeader, CardTitle, CardBody, CardText } from '../Bootstrap/components';
+import { ContainerFluid, Row, Column } from '../Bootstrap/layout';
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import Containers from '../Container/Containers';
@@ -442,27 +445,27 @@ class ContainerProfile extends React.Component {
       )
     }) : [];
     return (
-      <div className="ContainerProfile container-fluid">
-        
-        <div className="row">
-          <div className="col-12 col-lg-7">
+      <ContainerFluid className="ContainerProfile">  
+        <Row>
+          <Column col="12" colLg="7">
 
-            <div className="card rounded-0 mt-3">
-              <div className="card-header rounded-0 bg-dark text-light">
-                <div className="card-title mb-0 text-capitalize">
+            <Card className="mt-3">
+              <CardHeader dark className="bg-dark-green">
+                <CardTitle noHeading>
                   <span><i className="mdi mdi-xl mdi-grid" />{this.state.container.name}</span>
-                  
-                  <LabToolbar 
-                    {...this.props}
-                    type="Container"
-                    lab={this.state.lab}
-                    onRevokeLabMembership={this.onRevokeLabMembership}
-                    onRequestLabMembership={this.onRequestLabMembership}
-                    onCancelRequestLabMembership={this.onCancelRequestLabMembership}
-                  />
+                  {(isLoggedIn) ? (
+                    <LabToolbar 
+                      {...this.props}
+                      type="Container"
+                      lab={this.state.lab}
+                      onRevokeLabMembership={this.onRevokeLabMembership}
+                      onRequestLabMembership={this.onRequestLabMembership}
+                      onCancelRequestLabMembership={this.onCancelRequestLabMembership}
+                    />
+                  ) : null }
+                </CardTitle>
+              </CardHeader>
 
-                </div>
-              </div>
               {(isLoggedIn) ? (
                 <>
                   {(this.state.path.length > 0) ? (
@@ -493,11 +496,12 @@ class ContainerProfile extends React.Component {
                   </div>
                 </>
               ) : null}   
-            </div>
+            </Card>
 
               <Containers 
                 containers={this.state.containers} 
                 currentUser={this.props.currentUser}
+                userIsMember={userIsMember}
                 refresh={this.props.refresh}
                 physicals={labPhysicals}                
               /> 
@@ -506,13 +510,14 @@ class ContainerProfile extends React.Component {
                 containers={this.state.containers} 
                 physicals={this.state.physicals} 
                 currentUser={this.props.currentUser}
+                userIsMember={userIsMember}
                 refresh={this.props.refresh}
               />   
 
-          </div>
+          </Column>
 
           {(isLoggedIn) ? (
-            <div className="col-12 col-lg-5">
+            <Column col="12" colLg="5">
               <Grid 
                 demo={false}
                 selectLocations={false}
@@ -527,10 +532,24 @@ class ContainerProfile extends React.Component {
                 onCellDragEnd={this.onCellDragEnd}
                 {...this.state}
               />
-            </div>
-          ) : null }
-        </div>
-      </div>
+            </Column>
+          ) : (
+            <Column col="12" colLg="5">
+              <Card className="mt-3">
+                <CardHeader dark className="bg-dark-green">
+                  <CardTitle>Sign In Required</CardTitle>
+                </CardHeader>
+                <CardBody>
+                  <CardText>
+                    Please <Link to="/login">Login</Link> or <Link to="/signup">Sign Up</Link> to see more information.
+                  </CardText>
+
+                </CardBody>
+              </Card>
+            </Column>
+          )}
+        </Row>
+      </ContainerFluid>
     );
   }
 }
