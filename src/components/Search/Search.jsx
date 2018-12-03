@@ -40,12 +40,20 @@ class Search extends React.Component {
   }
 
   getRandomVirtual() {
+    let allPhysicals = this.props.physicals;
     let virtuals = this.props.virtuals;
     let index = getRandomInt(0, virtuals.length - 1);
     //console.log(index);
     let selected = virtuals[index];
     //console.log(virtual);
-    this.setState({selected});
+    let physicals = [];
+    for(let i = 0; i < allPhysicals.length; i++){
+      let physical = allPhysicals[i];
+      if (selected && physical.virtual && physical.virtual._id === selected._id){
+        physicals.push(physical);
+      }
+    }
+    this.setState({selected, physicals});
   }
 
   toggleFullSequence() {
