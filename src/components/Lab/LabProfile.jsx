@@ -15,10 +15,12 @@ class LabProfile extends React.Component {
       error: "",
       dragging: false,
       lab: {},
+      labContainers: [],
       containers: [],
       virtuals: []
     };
     this.getLab = this.getLab.bind(this);
+    this.getContainers = this.getContainers.bind(this);
     this.postLab = this.postLab.bind(this);
     this.getData = this.getData.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
@@ -47,6 +49,22 @@ class LabProfile extends React.Component {
       return labResponse;
     } catch (error) {
       console.log('LabProfile.getLab', error);
+    }  
+  }
+
+  async getContainers() {
+    try {  
+      let request = new Request(`${appConfig.apiBaseUrl}/containers`, {
+        method: 'GET',
+        headers: new Headers({
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let res = await fetch(request);
+      let response = res.json();
+      return response;
+    } catch (error) {
+      console.log('LabProfile.getContainers', error);
     }  
   }
 
@@ -184,10 +202,29 @@ class LabProfile extends React.Component {
     this.getLab(labId)
     .then((res) => {
       //console.log('getData.res', res);
-      this.setState({
-        lab: res.data,
-        containers: res.children,
-        virtuals: res.virtuals
+      let lab = res.data;
+      let virtuals = res.virtuals;
+      this.getContainers()
+      .then((res) => {
+        let allLabContainers = res.data;
+        let containers = [];
+        let labContainers = [];
+        for(let i = 0; i < allLabContainers.length; i++){
+          let labContainer = allLabContainers[i];
+          
+          if (labContainer.lab._id === labId) {
+            labContainers.push(labContainer);
+            if (labContainer.parent === null) {
+              containers.push(labContainer);
+            }
+          }
+        }
+        this.setState({
+          lab,
+          labContainers,
+          containers,
+          virtuals
+        });
       });
     });
   }
@@ -337,20 +374,6 @@ class LabProfile extends React.Component {
       }
     }
 
-    let labContainers = [];
-    if (this.state.containers && this.state.containers.length){
-      for(let i = 0; i < this.state.containers.length; i++){
-        let container = this.state.containers[i];
-        if (container.lab){
-          //console.log(container.lab._id, lab._id);
-          if (container.lab._id === lab._id && container.parent === null){
-            //console.log('match',container.lab._id, lab._id);
-            labContainers.push(container);
-          }
-        }  
-      }
-    }
-
     const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
       return (
         <div 
@@ -387,7 +410,7 @@ class LabProfile extends React.Component {
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
                   <span><i className="mdi mdi-xl mdi-teach" /> {lab.name}</span>
-                  
+                  {(isLoggedIn) ? (
                   <LabToolbar 
                     {...this.props}
                     type="Lab"
@@ -396,50 +419,51 @@ class LabProfile extends React.Component {
                     onRequestLabMembership={this.onRequestLabMembership}
                     onCancelRequestLabMembership={this.onCancelRequestLabMembership}
                   />
-
+                  ) : null }
                 </div>
               </div>
-              {(isLoggedIn) ? (
-                <>
-                  <div className="card-body">
-                    {(this.state.error.length > 0) ? (
-                      <p className="card-text text-danger">
-                        {this.state.error}
-                      </p>
-                    ) : null}
-                    
-                      {(lab.description && lab.description.length > 0) ? (
-                        <p className="card-text">
-                          {lab.description}
-                        </p>
-                      ) : (
-                        <p className="card-text">
-                          No description provided.
-                        </p>
-                      )}
-                    
-                    {(userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
-                      <>
-                      <h5>Membership Requests</h5> 
-                      {membershipRequests}
-                      </>
-                    ) : null }
-                  </div>
-                </>
-              ) : null}   
+                        
+              <div className="card-body">
+                {(this.state.error.length > 0) ? (
+                  <p className="card-text text-danger">
+                    {this.state.error}
+                  </p>
+                ) : null}
+                
+                  {(lab.description && lab.description.length > 0) ? (
+                    <p className="card-text">
+                      {lab.description}
+                    </p>
+                  ) : (
+                    <p className="card-text">
+                      No description provided.
+                    </p>
+                  )}
+                
+                {(isLoggedIn && userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
+                  <>
+                  <h5>Membership Requests</h5> 
+                  {membershipRequests}
+                  </>
+                ) : null }
+              </div>   
             </div>
 
               <Containers 
-                containers={labContainers} 
+                labContainers={this.state.labContainers}
+                containers={this.state.containers} 
                 currentUser={this.props.currentUser}
+                userIsMember={userIsMember}
                 refresh={this.props.refresh}
                 physicals={labPhysicals}                
               /> 
 
               <Physicals 
-                containers={labContainers} 
+                labContainers={this.state.labContainers}
+                containers={this.state.containers} 
                 physicals={labPhysicals} 
                 currentUser={this.props.currentUser}
+                userIsMember={userIsMember}
                 refresh={this.props.refresh}
               />
 
@@ -452,7 +476,7 @@ class LabProfile extends React.Component {
                 selectLocations={false}
                 recordType="Lab"
                 record={this.state.lab}
-                containers={labContainers}
+                containers={this.state.containers}
                 physicals={labPhysicals}
                 dragging={this.state.dragging}
                 onCellDragStart={this.onCellDragStart}

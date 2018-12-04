@@ -140,6 +140,9 @@ class Containers extends Component {
   render() {
     const mode = this.state.mode;
     const containers = this.props.containers || [];
+    //console.log('Containers.containers', containers);
+    const labContainers = this.props.labContainers || [];
+    //console.log('Containers.labContainers', labContainers);
     const container = this.state.container;
     const userIsMember = this.props.userIsMember;
 
@@ -159,7 +162,7 @@ class Containers extends Component {
         title = `Containers (${containers.length})`;
     }
 
-    let allParentOptions = [container.lab].concat(containers);
+    let allParentOptions = [container.lab].concat(labContainers);
     let newParentOptions = [];
     if(Object.keys(container).length > 0 && containers.length > 0) {
       if (containers && containers.length > 0) {

@@ -279,7 +279,8 @@ class Physicals extends Component {
     const physicals = this.props.physicals || [];
     const physical = this.state.physical;
     const virtual = this.state.virtual;
-    const containers = this.props.containers || [];
+    //const containers = this.props.containers || [];
+    const labContainers = this.props.labContainers || [];
     const userIsMember = this.props.userIsMember;
 
     let title;
@@ -304,6 +305,12 @@ class Physicals extends Component {
       case 'Delete Virtual':
         title = `Delete ${virtual.name}`;
         titleClasses = "mdi mdi-dna mr-2";
+        break; 
+      case 'Move Step 1':
+        title = `Move ${physical.name} Step 1/2 - Select Parent`;
+        break; 
+      case 'Move Step 2':
+        title = `Move ${physical.name} Step 2/2 - Select Location`;
         break;    
       default:
         title = 'List Physicals';  
@@ -338,26 +345,28 @@ class Physicals extends Component {
       );
     });
 
-    let allParentOptions = [physical.lab].concat(containers);
     let newParentOptions = [];
-    if(Object.keys(physical).length > 0 && containers.length > 0) {
-      if (containers && containers.length > 0) {
-        for (let i = 0; i < allParentOptions.length; i++){
-          let option = allParentOptions[i];
-          if (i === 0) { // first entry is lab
-            if (this.state.currentParent !== null) {
-              //console.log(physical);
-              //newParentOptions.push(option);
-            }
-          }
-          //console.log(option);
-          if (option._id !== physical._id) {
-            newParentOptions.push(option);
+    //console.log('Object.keys(physical).length', Object.keys(physical).length);
+    //console.log('containers.length', containers.length);
+    if(Object.keys(physical).length > 0 && labContainers.length > 0) {
+      let allParentOptions = [physical.lab].concat(labContainers);
+      //console.log('allParentOptions', allParentOptions);
+      for (let i = 0; i < allParentOptions.length; i++){
+        let option = allParentOptions[i];
+        if (i === 0) { // first entry is lab
+          if (this.state.currentParent !== null) {
+            //console.log(physical);
+            //newParentOptions.push(option);
           }
         }
+        //console.log(option);
+        if (option._id !== physical._id) {
+          newParentOptions.push(option);
+        }
       }
+      //console.log('newParentOptions', newParentOptions);
     } 
-
+    
     return (
       <div className="card rounded-0 mt-3 mb-3">
         <div className="card-header bg-dark text-light rounded-0">

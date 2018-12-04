@@ -21,12 +21,14 @@ class ContainerProfile extends React.Component {
       lab: {},
       container: {},
       containers: [],
+      labContainers: [],
       physicalsMode: "List",
       physicals: [],
       physical: {}
     };
     this.getPath = this.getPath.bind(this);
     this.getContainer = this.getContainer.bind(this);
+    this.getContainers = this.getContainers.bind(this);
     this.postLab = this.postLab.bind(this);
     this.getData = this.getData.bind(this);
     this.onRequestLabMembership = this.onRequestLabMembership.bind(this);
@@ -111,6 +113,22 @@ class ContainerProfile extends React.Component {
       return response;
     } catch (error) {
       console.log('ContainerProfile.getContainer', error);
+    }  
+  }
+
+  async getContainers() {
+    try {  
+      let request = new Request(`${appConfig.apiBaseUrl}/containers`, {
+        method: 'GET',
+        headers: new Headers({
+          'Authorization': `Bearer ${Auth.getToken()}`
+        })
+      });
+      let res = await fetch(request);
+      let response = res.json();
+      return response;
+    } catch (error) {
+      console.log('ContainerProfile.getContainers', error);
     }  
   }
 
@@ -251,7 +269,6 @@ class ContainerProfile extends React.Component {
       let lab; 
       lab = res.data.lab;
       let container = res.data;
-      let containers = res.containers;
       let physicals = res.physicals;
       this.getPath(lab._id, container._id)
       .then((res) => {
@@ -263,13 +280,30 @@ class ContainerProfile extends React.Component {
             path.push(pathArray[i]);
           }
         }
-        this.setState({
-          path,
-          lab,
-          container,
-          containers,
-          physicals
-        });
+        this.getContainers()
+        .then((res) => {
+          let allContainers = res.data;
+          //console.log('allContainers', allContainers);
+          let labContainers = [];
+          let containers = [];
+          for(let i = 0; i < allContainers.length; i++){
+            let labContainer = allContainers[i];
+            if (labContainer.lab._id === lab._id){
+              labContainers.push(labContainer);
+              if (labContainer.parent !== null && labContainer.parent._id === container._id) {
+                containers.push(labContainer);
+              }
+            }
+          }
+          this.setState({
+            path,
+            lab,
+            container,
+            containers,
+            labContainers,
+            physicals
+          });
+        });  
       });  
     });
   }
@@ -499,6 +533,7 @@ class ContainerProfile extends React.Component {
             </Card>
 
               <Containers 
+                labContainers={this.state.labContainers}
                 containers={this.state.containers} 
                 currentUser={this.props.currentUser}
                 userIsMember={userIsMember}
@@ -507,6 +542,7 @@ class ContainerProfile extends React.Component {
               /> 
               
               <Physicals 
+                labContainers={this.state.labContainers}
                 containers={this.state.containers} 
                 physicals={this.state.physicals} 
                 currentUser={this.props.currentUser}
