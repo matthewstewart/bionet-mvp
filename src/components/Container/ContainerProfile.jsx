@@ -438,7 +438,7 @@ class ContainerProfile extends React.Component {
       }
     }
     let labPhysicals = [];
-    if (this.state.physicals && this.state.physicals.length){
+
       for(let i = 0; i < this.state.physicals.length; i++){
         let physical = this.state.physicals[i];
         if (physical.lab){
@@ -449,7 +449,7 @@ class ContainerProfile extends React.Component {
           }
         }  
       }
-    }
+   
 
 
     const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {

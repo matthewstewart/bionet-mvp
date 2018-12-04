@@ -24,6 +24,7 @@ class Physicals extends Component {
       newParentPhysicals: [],
       newItemLocations: []
     };
+    this.onMoveCancel = this.onMoveCancel.bind(this);
     this.updatePhysical = this.updatePhysical.bind(this);
     this.deletePhysical = this.deletePhysical.bind(this);
     this.updateVirtual = this.updateVirtual.bind(this);
@@ -44,6 +45,10 @@ class Physicals extends Component {
     this.handleVirtualFormSubmit = this.handleVirtualFormSubmit.bind(this);
   }
 
+  onMoveCancel() {
+    this.changeMode("List");
+  }
+
   handleNewParentChange(selectedArray) {
     let newParent = selectedArray[0] || {};
     let labContainers = this.props.labContainers;
@@ -58,7 +63,7 @@ class Physicals extends Component {
     }
     for(let i = 0; i < labPhysicals.length; i++){
       let labPhysical = labPhysicals[i];
-      if (labPhysical.parent !== null && labPhysical.parent._id === newParent._id) {
+      if (labPhysical.parent !== null && labPhysical.parent === newParent._id) {
         newParentPhysicals.push(labPhysical);
       }
     }
@@ -687,6 +692,10 @@ class Physicals extends Component {
                   className="border-0"
                   maxResults={50}
                 />
+                <button 
+                  className="btn btn-secondary rounded-0 mt-3"
+                  onClick={this.onMoveCancel}
+                >Cancel Move</button>
               </div>
             </form>  
           </div>
@@ -699,6 +708,10 @@ class Physicals extends Component {
               Click on an empty location within {this.state.newParent.name}.<br/>
               Click on your selected location to unselect.
             </p>
+            <button 
+              className="btn btn-secondary rounded-0 mt-3"
+              onClick={this.onMoveCancel}
+            >Cancel Move</button>
             {(this.state.newItemLocations.length > 0) ? (
               <>
                 <p className="card-text">

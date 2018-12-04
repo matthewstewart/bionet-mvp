@@ -91,21 +91,38 @@ class Containers extends Component {
 
   handleNewParentChange(selectedArray) {
     let newParent = selectedArray[0] || {};
+    let newParentIsLab = Object.keys(newParent).indexOf('parent') === -1;
     let labContainers = this.props.labContainers;
     let labPhysicals = this.props.labPhysicals;
     let newParentContainers = [];
     let newParentPhysicals = [];
     for(let i = 0; i < labContainers.length; i++){
       let labContainer = labContainers[i];
-      if (labContainer.parent !== null && labContainer.parent._id === newParent._id) {
-        newParentContainers.push(labContainer);
+      // console.log(`labContainer ${i + 1}`, labContainer);
+      // console.log(`labContainer ${i + 1} parent`, labContainer.parent);
+      if (newParentIsLab){
+        if (labContainer.parent === null) {
+          newParentContainers.push(labContainer);
+        }
+      } else {
+        if (labContainer.parent !== null && labContainer.parent._id === newParent._id) {
+          newParentContainers.push(labContainer);
+        }
       }
     }
     for(let i = 0; i < labPhysicals.length; i++){
       let labPhysical = labPhysicals[i];
-      if (labPhysical.parent !== null && labPhysical.parent._id === newParent._id) {
-        newParentPhysicals.push(labPhysical);
-      }
+      console.log(`labPhysical ${i + 1}`, labPhysical);
+      console.log(`labPhysical ${i + 1} parent`, labPhysical.parent);
+      if (newParentIsLab){
+        if (labPhysical.parent === null) {
+          newParentPhysicals.push(labPhysical);
+        }
+      } else {
+        if (labPhysical.parent !== null && labPhysical.parent === newParent._id) {
+          newParentPhysicals.push(labPhysical);
+        }
+      }      
     }
     this.setState({
       newParent,
