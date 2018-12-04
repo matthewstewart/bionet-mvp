@@ -20,6 +20,8 @@ class Physicals extends Component {
       virtualForm: {},
       currentParent: {},
       newParent: {},
+      newParentContainers: [],
+      newParentPhysicals: [],
       newItemLocations: []
     };
     this.updatePhysical = this.updatePhysical.bind(this);
@@ -44,8 +46,26 @@ class Physicals extends Component {
 
   handleNewParentChange(selectedArray) {
     let newParent = selectedArray[0] || {};
+    let labContainers = this.props.labContainers;
+    let labPhysicals = this.props.labPhysicals;
+    let newParentContainers = [];
+    let newParentPhysicals = [];
+    for(let i = 0; i < labContainers.length; i++){
+      let labContainer = labContainers[i];
+      if (labContainer.parent !== null && labContainer.parent._id === newParent._id) {
+        newParentContainers.push(labContainer);
+      }
+    }
+    for(let i = 0; i < labPhysicals.length; i++){
+      let labPhysical = labPhysicals[i];
+      if (labPhysical.parent !== null && labPhysical.parent._id === newParent._id) {
+        newParentPhysicals.push(labPhysical);
+      }
+    }
     this.setState({
       newParent,
+      newParentContainers,
+      newParentPhysicals,
       mode: "Move Step 2"
     });
   }
@@ -282,6 +302,7 @@ class Physicals extends Component {
     //const containers = this.props.containers || [];
     const labContainers = this.props.labContainers || [];
     const userIsMember = this.props.userIsMember;
+    const newParentExists = Object.keys(this.state.newParent).length > 0;
 
     let title;
     let titleClasses = "mdi mdi-flask mr-2";
@@ -703,9 +724,9 @@ class Physicals extends Component {
               addLocation={this.addLocation}
               removeLocation={this.removeLocation}
               recordType="Container"
-              record={Object.keys(this.state.newParent).length > 0 ? this.state.newParent : this.state.container}
-              containers={this.props.containers}
-              physicals={this.props.physicals}
+              record={newParentExists ? this.state.newParent : this.state.container}
+              containers={newParentExists ? this.state.newParentContainers : this.props.containers}
+              physicals={newParentExists ? this.state.newParentPhysicals : this.props.physicals}
             />
           </div>
         ) : null } 

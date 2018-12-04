@@ -451,6 +451,7 @@ class LabProfile extends React.Component {
 
               <Containers 
                 labContainers={this.state.labContainers}
+                labPhysicals={labPhysicals}
                 containers={this.state.containers} 
                 currentUser={this.props.currentUser}
                 userIsMember={userIsMember}
@@ -460,6 +461,7 @@ class LabProfile extends React.Component {
 
               <Physicals 
                 labContainers={this.state.labContainers}
+                labPhysicals={labPhysicals}
                 containers={this.state.containers} 
                 physicals={labPhysicals} 
                 currentUser={this.props.currentUser}
