@@ -66,10 +66,12 @@ class Containers extends Component {
   }
 
   onChangeMode(e) {
+    console.log('onChangeMode started...');
     let containers = this.props.containers || [];
     let container = {};
     let currentParent = {};
     let mode = e.target.getAttribute('mode');
+    console.log('onChangeMode.e.attr.mode', mode);
     for(let i = 0; i < containers.length; i++){
       let thisContainer = containers[i];
       if (thisContainer._id === e.target.id){
@@ -222,31 +224,54 @@ class Containers extends Component {
 
     const containersList = containers.map((thisContainer, index) => {
       return (
-        <div 
-          key={shortid.generate()}
-          className="list-group-item list-group-item-action rounded-0"
-        >
-          <h4 className="mb-0">
-            <i className="mdi mdi-grid mr-2" />{thisContainer.name}
-            <div className="btn-group float-right">
-              <Link 
-                to={`/containers/${thisContainer._id}`}
-                mode='View'
-                className="btn btn-sm btn-info rounded-0"
-                onClick={this.onChangeMode}
-              >View Details
-              </Link>
-              {(userIsMember) ? (
-                <div 
-                  id={thisContainer._id}
-                  mode='Move Step 1'
-                  className="btn btn-sm btn-primary rounded-0"
-                  onClick={this.onChangeMode}
-                >Move</div>
-              ) : null }
+        <div key={shortid.generate()} className="d-block">
+          <div className="container-fluid pl-0 pr-0">
+            <div className="row no-gutters">
+              <div className={userIsMember ? "col-9" : "col-12"}>
+                <Link to={`/containers/${thisContainer._id}`} className="list-group-item list-group-item-action bg-info text-light rounded-0">
+                  <h5 className="mb-0">
+                    <i className="mdi mdi-grid mr-2" />{thisContainer.name}
+                  </h5>
+                </Link>  
+              </div> 
+              {userIsMember ? (
+                <div className="col-3 text-center">
+                  <button 
+                    className="list-group-item list-group-item-action bg-primary text-light rounded-0"
+                    onClick={this.onChangeMode}
+                    id={thisContainer._id}
+                    mode='Move Step 1'
+                  >
+                    <h5 
+                      className="mb-0"
+                      id={thisContainer._id}
+                      mode='Move Step 1'
+                    >
+                      <i className="mdi mdi-arrow-all mr-2" />Move
+                      {/* <div className="btn-group float-right">
+                        <Link 
+                          to={`/containers/${thisContainer._id}`}
+                          mode='View'
+                          className="btn btn-sm btn-info rounded-0"
+                          onClick={this.onChangeMode}
+                        >View Details
+                        </Link>
+                        {(userIsMember) ? (
+                          <div 
+                            id={thisContainer._id}
+                            mode='Move Step 1'
+                            className="btn btn-sm btn-primary rounded-0"
+                            onClick={this.onChangeMode}
+                          >Move</div>
+                        ) : null }
+                      </div>   */}
+                    </h5>
+                  </button>
+                </div> 
+              ) : null }  
             </div>  
-          </h4>
-        </div>        
+          </div>
+        </div>    
       );
     });
 
@@ -259,7 +284,7 @@ class Containers extends Component {
         </div>
 
         {(mode === 'List') ? (
-          <ul className="list-group list-group-flush">
+          <ul className="list-group list-group-flush d-block">
             {containersList}
           </ul>
         ) : null }  
