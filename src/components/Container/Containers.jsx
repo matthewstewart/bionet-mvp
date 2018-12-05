@@ -247,7 +247,8 @@ class Containers extends Component {
                       id={thisContainer._id}
                       mode='Move Step 1'
                     >
-                      <i className="mdi mdi-arrow-all mr-2" />Move
+                      <i className="mdi mdi-grid" />
+                      <i className="mdi mdi-arrow-up-down-bold-outline" />
                       {/* <div className="btn-group float-right">
                         <Link 
                           to={`/containers/${thisContainer._id}`}
