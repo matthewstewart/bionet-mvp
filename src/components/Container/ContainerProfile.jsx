@@ -554,38 +554,23 @@ class ContainerProfile extends React.Component {
 
           </Column>
 
-          {(isLoggedIn) ? (
-            <Column col="12" colLg="5">
-              <Grid 
-                demo={false}
-                selectLocations={false}
-                recordType="Lab"
-                record={this.state.container}
-                containers={this.state.containers}
-                physicals={this.state.physicals}
-                dragging={this.state.dragging}
-                onCellDragStart={this.onCellDragStart}
-                onCellDragOver={this.onCellDragOver}
-                onCellDrop={this.onCellDrop}
-                onCellDragEnd={this.onCellDragEnd}
-                {...this.state}
-              />
-            </Column>
-          ) : (
-            <Column col="12" colLg="5">
-              <Card className="mt-3">
-                <CardHeader dark className="bg-dark-green">
-                  <CardTitle>Sign In Required</CardTitle>
-                </CardHeader>
-                <CardBody>
-                  <CardText>
-                    Please <Link to="/login">Login</Link> or <Link to="/signup">Sign Up</Link> to see more information.
-                  </CardText>
+          <Column col="12" colLg="5">
+            <Grid 
+              demo={false}
+              selectLocations={false}
+              recordType="Lab"
+              record={this.state.container}
+              containers={this.state.containers}
+              physicals={this.state.physicals}
+              dragging={this.state.dragging}
+              onCellDragStart={this.onCellDragStart}
+              onCellDragOver={this.onCellDragOver}
+              onCellDrop={this.onCellDrop}
+              onCellDragEnd={this.onCellDragEnd}
+              {...this.state}
+            />
+          </Column>
 
-                </CardBody>
-              </Card>
-            </Column>
-          )}
         </Row>
       </ContainerFluid>
     );

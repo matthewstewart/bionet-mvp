@@ -471,23 +471,21 @@ class LabProfile extends React.Component {
 
           </div>
 
-          {(isLoggedIn) ? (
-            <div className="col-12 col-lg-5">
-              <Grid 
-                demo={false}
-                selectLocations={false}
-                recordType="Lab"
-                record={this.state.lab}
-                containers={this.state.containers}
-                physicals={labPhysicals}
-                dragging={this.state.dragging}
-                onCellDragStart={this.onCellDragStart}
-                onCellDragOver={this.onCellDragOver}
-                onCellDrop={this.onCellDrop}
-                onCellDragEnd={this.onCellDragEnd}
-              />
-            </div>
-          ) : null }
+          <div className="col-12 col-lg-5">
+            <Grid 
+              demo={false}
+              selectLocations={false}
+              recordType="Lab"
+              record={this.state.lab}
+              containers={this.state.containers}
+              physicals={labPhysicals}
+              dragging={this.state.dragging}
+              onCellDragStart={this.onCellDragStart}
+              onCellDragOver={this.onCellDragOver}
+              onCellDrop={this.onCellDrop}
+              onCellDragEnd={this.onCellDragEnd}
+            />
+          </div>
         </div>
       </div>
     );
