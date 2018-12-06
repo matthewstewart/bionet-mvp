@@ -57,7 +57,7 @@ class App extends React.Component {
     .then((res) => {
       //console.log('getCurrentUserLabs.res', res);
       let labs = res.data;
-      console.log('currentUser', currentUser);
+      //console.log('currentUser', currentUser);
       //console.log('labs', labs);
       currentUser['labs'] = [];
       currentUser['labsRequested'] = [];

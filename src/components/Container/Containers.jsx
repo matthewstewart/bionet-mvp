@@ -71,7 +71,7 @@ class Containers extends Component {
     let container = {};
     let currentParent = {};
     let mode = e.target.getAttribute('mode');
-    console.log('onChangeMode.e.attr.mode', mode);
+    //console.log('onChangeMode.e.attr.mode', mode);
     for(let i = 0; i < containers.length; i++){
       let thisContainer = containers[i];
       if (thisContainer._id === e.target.id){
@@ -247,7 +247,6 @@ class Containers extends Component {
                       id={thisContainer._id}
                       mode='Move Step 1'
                     >
-                      <i className="mdi mdi-grid" />
                       <i className="mdi mdi-arrow-up-down-bold-outline" />
                       {/* <div className="btn-group float-right">
                         <Link 
