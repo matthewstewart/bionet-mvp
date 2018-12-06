@@ -66,7 +66,7 @@ class Containers extends Component {
   }
 
   onChangeMode(e) {
-    console.log('onChangeMode started...');
+    //console.log('onChangeMode started...');
     let containers = this.props.containers || [];
     let container = {};
     let currentParent = {};
@@ -96,6 +96,7 @@ class Containers extends Component {
     let newParentIsLab = Object.keys(newParent).indexOf('parent') === -1;
     let labContainers = this.props.labContainers;
     let labPhysicals = this.props.labPhysicals;
+    console.log('Containers.handleNewParentChange.labPhysicals', labPhysicals);
     let newParentContainers = [];
     let newParentPhysicals = [];
     for(let i = 0; i < labContainers.length; i++){
@@ -121,7 +122,7 @@ class Containers extends Component {
           newParentPhysicals.push(labPhysical);
         }
       } else {
-        if (labPhysical.parent !== null && labPhysical.parent === newParent._id) {
+        if (labPhysical.parent !== null && labPhysical.parent._id === newParent._id) {
           newParentPhysicals.push(labPhysical);
         }
       }      

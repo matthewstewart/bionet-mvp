@@ -358,15 +358,20 @@ class LabProfile extends React.Component {
         if (userLab._id === lab._id) { userIsMember = true; }
       }
     }
-    let labPhysicals = [];
-
+    let labChildPhysicals = [];
+    let labAllPhysicals = [];
       for(let i = 0; i < this.props.physicals.length; i++){
         let physical = this.props.physicals[i];
         if (physical.lab){
-          //console.log('Physical Match', physical.lab._id, lab._id);
-          if (physical.lab._id === lab._id && physical.parent === null){
-            //console.log('match',physical.lab._id, lab._id);
-            labPhysicals.push(physical);
+          //console.log('Physical to Lab Match', physical.lab._id, lab._id);
+          if (physical.lab._id === lab._id){
+            // physical exists in lab
+            //console.log('lab match',physical.lab._id, lab._id);
+            labAllPhysicals.push(physical);
+            if (physical.parent === null) {
+              labChildPhysicals.push(physical);
+            }
+            
           } else {
             //console.log('no match', physical.lab._id, lab._id);
           }
@@ -451,19 +456,19 @@ class LabProfile extends React.Component {
 
               <Containers 
                 labContainers={this.state.labContainers}
-                labPhysicals={labPhysicals}
+                labPhysicals={labAllPhysicals}
                 containers={this.state.containers} 
                 currentUser={this.props.currentUser}
                 userIsMember={userIsMember}
                 refresh={this.props.refresh}
-                physicals={labPhysicals}                
+                physicals={labChildPhysicals}                
               /> 
 
               <Physicals 
                 labContainers={this.state.labContainers}
-                labPhysicals={labPhysicals}
+                labPhysicals={labAllPhysicals}
                 containers={this.state.containers} 
-                physicals={labPhysicals} 
+                physicals={labChildPhysicals} 
                 currentUser={this.props.currentUser}
                 userIsMember={userIsMember}
                 refresh={this.props.refresh}
@@ -478,7 +483,7 @@ class LabProfile extends React.Component {
               recordType="Lab"
               record={this.state.lab}
               containers={this.state.containers}
-              physicals={labPhysicals}
+              physicals={labChildPhysicals}
               dragging={this.state.dragging}
               onCellDragStart={this.onCellDragStart}
               onCellDragOver={this.onCellDragOver}
