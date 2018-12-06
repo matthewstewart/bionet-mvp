@@ -1,8 +1,8 @@
 import React from 'react';
 import shortid from 'shortid';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 import Auth from "../../modules/Auth";
-import { Card, CardHeader, CardTitle, CardBody, CardText } from '../Bootstrap/components';
+import { Card, CardHeader, CardTitle } from '../Bootstrap/components';
 import { ContainerFluid, Row, Column } from '../Bootstrap/layout';
 import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
@@ -266,9 +266,9 @@ class ContainerProfile extends React.Component {
     this.getContainer(containerId)
     .then((res) => {
       //console.log('ContainerProfile.getData.res', res);
-      let lab; 
-      lab = res.data.lab;
-      let container = res.data;
+      let container = res.data; 
+      let lab = container.lab;
+      //console.log('ContainerProfile.getData.res.lab', lab);
       let physicals = res.physicals;
       this.getPath(lab._id, container._id)
       .then((res) => {
