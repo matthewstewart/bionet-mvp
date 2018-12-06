@@ -288,7 +288,7 @@ class ContainerProfile extends React.Component {
           let containers = [];
           for(let i = 0; i < allContainers.length; i++){
             let labContainer = allContainers[i];
-            if (labContainer.lab._id === lab._id){
+            if (labContainer.lab && labContainer.lab._id === lab._id){
               labContainers.push(labContainer);
               if (labContainer.parent !== null && labContainer.parent._id === container._id) {
                 containers.push(labContainer);
