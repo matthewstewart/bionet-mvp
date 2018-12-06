@@ -344,30 +344,48 @@ class Physicals extends Component {
 
     const physicalsList = physicals.map((thisPhysical, index) => {
       return (
-        <div 
-          key={shortid.generate()}
-          className="list-group-item list-group-item-action rounded-0"
-        >
-          <h4 className="mb-0">
-            <i className="mdi mdi-flask mr-2" />{thisPhysical.name}
-            <div className="btn-group float-right">
-              <div 
-                id={thisPhysical._id}
-                mode='View'
-                className="btn btn-sm btn-info rounded-0"
-                onClick={this.onChangeMode}
-              >View Details</div>
-              {(userIsMember) ? (
-                <div 
+        <div key={shortid.generate()} className="d-block">
+          <div className="container-fluid pl-0 pr-0">
+            <div className="row no-gutters">
+              <div className={userIsMember ? "col-7 col-md-8 col-lg-9" : "col-12"}>
+                <button 
+                  className="list-group-item list-group-item-action bg-info text-light rounded-0"
                   id={thisPhysical._id}
-                  mode='Move Step 1'
-                  className="btn btn-sm btn-primary rounded-0"
+                  mode='View'
                   onClick={this.onChangeMode}
-                >Move</div>
+                >
+                  <h5 
+                    className="mb-0"
+                    id={thisPhysical._id}
+                    mode='View'
+                    onClick={this.onChangeMode}
+                  >
+                    <i className="mdi mdi-flask mr-2" />{thisPhysical.name}
+                  </h5>
+                </button>  
+              </div> 
+              {userIsMember ? (
+                <div className="col-5 col-md-4 col-lg-3 text-center">
+                  <button 
+                    className="list-group-item list-group-item-action bg-primary text-light rounded-0"
+                    onClick={this.onChangeMode}
+                    id={thisPhysical._id}
+                    mode='Move Step 1'
+                  >
+                    <h5 
+                      className="mb-0"
+                      id={thisPhysical._id}
+                      mode='Move Step 1'
+                      onClick={this.onChangeMode}
+                    >
+                      <i className="mdi mdi-arrow-up-down-bold-outline mr-2" />Move
+                    </h5>
+                  </button>
+                </div> 
               ) : null }  
             </div>  
-          </h4>
-        </div>        
+          </div>
+        </div>    
       );
     });
 

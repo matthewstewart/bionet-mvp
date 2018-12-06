@@ -248,23 +248,6 @@ class Containers extends Component {
                       mode='Move Step 1'
                     >
                       <i className="mdi mdi-arrow-up-down-bold-outline mr-2" />Move
-                      {/* <div className="btn-group float-right">
-                        <Link 
-                          to={`/containers/${thisContainer._id}`}
-                          mode='View'
-                          className="btn btn-sm btn-info rounded-0"
-                          onClick={this.onChangeMode}
-                        >View Details
-                        </Link>
-                        {(userIsMember) ? (
-                          <div 
-                            id={thisContainer._id}
-                            mode='Move Step 1'
-                            className="btn btn-sm btn-primary rounded-0"
-                            onClick={this.onChangeMode}
-                          >Move</div>
-                        ) : null }
-                      </div>   */}
                     </h5>
                   </button>
                 </div> 
