@@ -106,9 +106,9 @@ class App extends React.Component {
     try {  
       let labsRequest = new Request(`${appConfig.apiBaseUrl}/labs`, {
         method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
+        // headers: new Headers({
+        //   'Authorization': `Bearer ${Auth.getToken()}`
+        // })
       });
       let labRes = await fetch(labsRequest);
       let labsResponse = labRes.json();
@@ -202,6 +202,12 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.getLabs()
+    .then((res) => {
+      this.setState({
+        labs: res.data
+      });
+    })
     this.setCurrentUser();
   }
 

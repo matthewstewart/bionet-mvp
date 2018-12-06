@@ -390,7 +390,7 @@ class Grid extends Component {
               </>
             ) : (
               <>
-                {this.props.record.name || `Loading...`}
+                {this.props.record.name || (<>&nbsp;</>)}
               </>
             )}    
           </h4>

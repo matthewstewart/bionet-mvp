@@ -212,7 +212,7 @@ class LabProfile extends React.Component {
         for(let i = 0; i < allLabContainers.length; i++){
           let labContainer = allLabContainers[i];
           
-          if (labContainer.lab._id === labId) {
+          if (labContainer.lab && labContainer.lab._id === labId) {
             labContainers.push(labContainer);
             if (labContainer.parent === null) {
               containers.push(labContainer);
@@ -473,7 +473,7 @@ class LabProfile extends React.Component {
 
           <div className="col-12 col-lg-5">
             <Grid 
-              demo={this.props.isLoggedIn ? false : true}
+              demo={false}
               selectLocations={false}
               recordType="Lab"
               record={this.state.lab}
