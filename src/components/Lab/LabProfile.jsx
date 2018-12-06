@@ -473,7 +473,7 @@ class LabProfile extends React.Component {
 
           <div className="col-12 col-lg-5">
             <Grid 
-              demo={false}
+              demo={this.props.isLoggedIn ? false : true}
               selectLocations={false}
               recordType="Lab"
               record={this.state.lab}

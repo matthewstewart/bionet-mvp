@@ -384,7 +384,7 @@ class Grid extends Component {
       <div className="card rounded-0 mt-3 mb-3">
         <div className="card-header bg-dark text-light rounded-0">
           <h4 className="card-title mb-0 text-capitalize">
-            {(this.props.demo) ? (
+            {(this.props.isLoggedIn && this.props.demo) ? (
               <>
                 {this.props.record.name || `(Select A ${this.props.recordType} Name)`}
               </>

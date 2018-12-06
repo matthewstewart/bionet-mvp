@@ -208,7 +208,7 @@ class ContainerProfile extends React.Component {
   }
 
   onCellDragStart(e) {
-    console.log('onCellDragStart');
+    //console.log('onCellDragStart');
     // let selectedRecord = this.props.selectedRecord;
     // let children = selectedRecord.children || [];
     let children = this.state.containers.concat(this.props.physicals);
@@ -246,7 +246,7 @@ class ContainerProfile extends React.Component {
   }
 
   onCellDrop(e) {
-    console.log('onCellDrop');
+    //console.log('onCellDrop');
     const draggedCell = JSON.parse(e.dataTransfer.getData("draggedCell"));
     //console.log('draggedCell+data', draggedCell);
     const targetCellRow = Number(e.target.getAttribute('row'));
@@ -556,9 +556,9 @@ class ContainerProfile extends React.Component {
 
           <Column col="12" colLg="5">
             <Grid 
-              demo={false}
+              demo={this.props.isLoggedIn ? false : true }
               selectLocations={false}
-              recordType="Lab"
+              recordType="Container"
               record={this.state.container}
               containers={this.state.containers}
               physicals={this.state.physicals}
