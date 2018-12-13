@@ -10,17 +10,31 @@ class Navigation extends Component {
     let pathName = this.props.location.pathname;
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
-    const labs = this.props.labs;
+    const labs = this.props.labs || [];
     const labsJoined = isLoggedIn ? currentUser.labs.map((lab, index) => {
       return (
-        <NavbarDropdownLink 
-          key={shortid.generate()}
-          to={`/labs/${lab._id}`}
-        >
-          <i className="mdi mdi-teach mr-2"/>{lab.name}
-        </NavbarDropdownLink>
+        <>
+          {(index > 0) ? ( <div className="dropdown-divider mt-0"></div> ) : null }
+          <h6 className="dropdown-header">{lab.name} - <i className="mdi mdi-account"/>({lab.users.length})</h6>
+          <div className="dropdown-divider mb-0"></div>
+          <NavbarDropdownLink 
+            key={shortid.generate()}
+            to={`/labs/${lab._id}`}
+            className="bg-info text-light"
+          >
+            <i className="mdi mdi-eye mr-2"/>View
+          </NavbarDropdownLink>
+          <NavbarDropdownLink 
+            key={shortid.generate()}
+            to={`/labs/${lab._id}/edit`}
+            className="bg-primary text-light"
+          >
+            <i className="mdi mdi-pencil mr-2"/>Edit
+          </NavbarDropdownLink>
+        </>
       )
     }) : [];
+    const hasLabsJoined = isLoggedIn && currentUser && currentUser.labs && currentUser.labs.length > 0;
     const labsNotJoined = isLoggedIn ? labs.map((lab, index) => {
       let labIsJoined = false;
       for(let i = 0; i < currentUser.labs.length; i++){
@@ -39,7 +53,8 @@ class Navigation extends Component {
           </NavbarDropdownLink>
         );
       } else { return null }
-    }) : [];    
+    }) : [];
+    const hasLabsNotJoined = labs && labsNotJoined.length > 0;
     const allLabs = labs.map((lab, index) => {
       return (
         <NavbarDropdownLink 
@@ -60,25 +75,27 @@ class Navigation extends Component {
             <Link className="nav-link" to="/">Home</Link>
           </li>
 
-          <NavbarDropdown id="lab-dropdown" label='Labs'>
-            
-
+          <NavbarDropdown id="lab-dropdown" label={currentUser.username}>
             
             {(isLoggedIn) ? (
               <>
-                <h6 className="dropdown-header">My Labs</h6>
-                <div className="dropdown-divider"></div>
-                {labsJoined}
-                <NavbarDropdownLink to={`/labs/new`}>
+                {(hasLabsJoined) ? (labsJoined) : null }  
+                
+                {(hasLabsNotJoined) ? (
+                  <>
+                    <div className="dropdown-divider mt-0"></div>
+                    <h6 className="dropdown-header">Labs - <i className="mdi mdi-teach mr-1"/>({labsNotJoined.length})</h6>
+                    <div className="dropdown-divider"></div>
+                    {labsNotJoined}
+                  </>
+                ) : null }  
+                
+                <NavbarDropdownLink to={`/labs/new`} className="bg-success text-light">
                   <i className="mdi mdi-teach"/>
                   <i className="mdi mdi-plus mr-2"/>
                   New Lab
                 </NavbarDropdownLink>
 
-                <div className="dropdown-divider"></div>
-                <h6 className="dropdown-header">Other Labs</h6>
-                <div className="dropdown-divider"></div>
-                {labsNotJoined}                
               </>
             ) : (
               <>
@@ -99,7 +116,7 @@ class Navigation extends Component {
               <NavbarLink to="/about">About</NavbarLink>
               <li className="nav-item">
                 <a 
-                  className="nav-link" 
+                  className="nav-link mr-4" 
                   href="/"
                   onClick={ this.props.logoutCurrentUser }
                 >Logout</a>

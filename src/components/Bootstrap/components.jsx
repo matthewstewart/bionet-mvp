@@ -339,7 +339,7 @@ export const NavbarNav = class NavbarNav extends Component {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className={classes} id="navbarNav">
-          <ul className="navbar-nav ml-auto">
+          <ul className="navbar-nav mr-auto">
             {this.props.children}
           </ul>
         </div>
