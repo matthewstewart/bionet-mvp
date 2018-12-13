@@ -71,10 +71,6 @@ class Navigation extends Component {
         </NavbarBrand>
         <NavbarNav>
 
-          <li className={pathName === '/' ? "nav-item active" : "nav-item"}>
-            <Link className="nav-link" to="/">Home</Link>
-          </li>
-
           <NavbarDropdown id="lab-dropdown" label={currentUser.username}>
             
             {(isLoggedIn) ? (
