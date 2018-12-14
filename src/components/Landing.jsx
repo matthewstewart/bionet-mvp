@@ -14,7 +14,7 @@ class Landing extends React.Component {
     return (
       <ContainerFluid className="Landing">  
         <Row className="justify-content-lg-center">
-          <Column col="12" colLg="7">
+          <Column col="12" colLg="7" colXl="5">
             <Search {...this.props}/>
           </Column>
         </Row>

@@ -405,17 +405,18 @@ class LabProfile extends React.Component {
         </div>
       )
     }) : [];
+    
     return (
       <div className="LabProfile container-fluid">
         
         <div className="row">
-          <div className="col-12 col-lg-7">
+          <div className="col-12 col-lg-7 col-xl-8">
 
             <div className="card rounded-0 mt-3">
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
-                  <span><i className="mdi mdi-xl mdi-teach" /> {lab.name}</span>
-                  {(isLoggedIn) ? (
+                  <span><i className="mdi mdi-teach" /> {lab.name}</span>
+                  {/* {(isLoggedIn) ? (
                   <LabToolbar 
                     {...this.props}
                     type="Lab"
@@ -424,7 +425,7 @@ class LabProfile extends React.Component {
                     onRequestLabMembership={this.onRequestLabMembership}
                     onCancelRequestLabMembership={this.onCancelRequestLabMembership}
                   />
-                  ) : null }
+                  ) : null } */}
                 </div>
               </div>
                         
@@ -476,11 +477,11 @@ class LabProfile extends React.Component {
 
           </div>
 
-          <div className="col-12 col-lg-5">
+          <div className="col-12 col-lg-5 col-xl-4">
             <Grid 
+              {...this.props}
               demo={false}
               selectLocations={false}
-              recordType="Lab"
               record={this.state.lab}
               containers={this.state.containers}
               physicals={labChildPhysicals}
@@ -489,6 +490,11 @@ class LabProfile extends React.Component {
               onCellDragOver={this.onCellDragOver}
               onCellDrop={this.onCellDrop}
               onCellDragEnd={this.onCellDragEnd}
+              type="Lab"
+              lab={this.state.lab}
+              onRevokeLabMembership={this.onRevokeLabMembership}
+              onRequestLabMembership={this.onRequestLabMembership}
+              onCancelRequestLabMembership={this.onCancelRequestLabMembership}
             />
           </div>
         </div>

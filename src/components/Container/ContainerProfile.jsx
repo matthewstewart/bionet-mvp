@@ -1,5 +1,5 @@
 import React from 'react';
-import shortid from 'shortid';
+//import shortid from 'shortid';
 //import { Link } from 'react-router-dom';
 import Auth from "../../modules/Auth";
 import { Card, CardHeader, CardTitle } from '../Bootstrap/components';
@@ -9,7 +9,7 @@ import Grid from '../Grid/Grid';
 import Containers from '../Container/Containers';
 import Physicals from '../Physical/Physicals';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
-import LabToolbar from '../Lab/LabToolbar';
+//import LabToolbar from '../Lab/LabToolbar';
 
 class ContainerProfile extends React.Component {
 
@@ -423,6 +423,7 @@ class ContainerProfile extends React.Component {
   }
 
   componentDidMount() {
+    //console.log('ContainerProfile.props', this.props)
     this.getData();
   }
 
@@ -451,52 +452,15 @@ class ContainerProfile extends React.Component {
       }
    
 
-
-    const membershipRequests = isLoggedIn && lab.joinRequests ? lab.joinRequests.map((user, index) => {
-      return (
-        <div 
-          key={shortid.generate()}
-          className="join-request d-block"
-        >
-          <span className="float-left"><i className="mdi mdi-account mr-2"/>{user.username}</span>
-          <div className="btn-group float-right ml-2">
-            <button 
-              className="btn btn-sm btn-success"
-              userid={user._id}
-              onClick={this.onAcceptRequestLabMembership}
-            >
-              <i className="mdi mdi-account-check mr-2" />Approve
-            </button>
-            <button 
-              className="btn btn-sm btn-danger"
-              userid={user._id}
-              onClick={this.onDenyRequestLabMembership}
-            >
-              <i className="mdi mdi-account-minus mr-2" />Deny
-            </button>
-          </div>
-        </div>
-      )
-    }) : [];
     return (
       <ContainerFluid className="ContainerProfile">  
         <Row>
-          <Column col="12" colLg="7">
+          <Column col="12" colLg="7" colXl="8">
 
             <Card className="mt-3">
               <CardHeader dark className="bg-dark-green">
                 <CardTitle noHeading>
                   <span><i className="mdi mdi-xl mdi-grid" />{this.state.container.name}</span>
-                  {(isLoggedIn) ? (
-                    <LabToolbar 
-                      {...this.props}
-                      type="Container"
-                      lab={this.state.lab}
-                      onRevokeLabMembership={this.onRevokeLabMembership}
-                      onRequestLabMembership={this.onRequestLabMembership}
-                      onCancelRequestLabMembership={this.onCancelRequestLabMembership}
-                    />
-                  ) : null }
                 </CardTitle>
               </CardHeader>
 
@@ -516,17 +480,12 @@ class ContainerProfile extends React.Component {
                       </p>
                     ) : null}
                     
-                      {this.state.container.description && this.state.container.description.length > 0 ? (
-                        <p className="card-text">{this.state.container.description}</p>
-                      ) : (
-                        <p className="card-text">No description provided.</p>
-                      )}
-                    {(userIsMember && lab && lab.joinRequests && lab.joinRequests.length > 0) ? (
-                      <>
-                      <h5>Membership Requests</h5> 
-                      {membershipRequests}
-                      </>
-                    ) : null }
+                    {this.state.container.description && this.state.container.description.length > 0 ? (
+                      <p className="card-text">{this.state.container.description}</p>
+                    ) : (
+                      <p className="card-text">No description provided.</p>
+                    )}
+
                   </div>
                 </>
               ) : null}   
@@ -554,11 +513,11 @@ class ContainerProfile extends React.Component {
 
           </Column>
 
-          <Column col="12" colLg="5">
+          <Column col="12" colLg="5" colXl="4">
             <Grid 
+              {...this.props}
               demo={this.props.isLoggedIn ? false : true }
               selectLocations={false}
-              recordType="Container"
               record={this.state.container}
               containers={this.state.containers}
               physicals={this.state.physicals}
@@ -567,7 +526,11 @@ class ContainerProfile extends React.Component {
               onCellDragOver={this.onCellDragOver}
               onCellDrop={this.onCellDrop}
               onCellDragEnd={this.onCellDragEnd}
-              {...this.state}
+              type="Container"
+              lab={this.state.lab}
+              onRevokeLabMembership={this.onRevokeLabMembership}
+              onRequestLabMembership={this.onRequestLabMembership}
+              onCancelRequestLabMembership={this.onCancelRequestLabMembership}
             />
           </Column>
 

@@ -64,7 +64,6 @@ class ContainerAdd extends React.Component {
     let containerId = this.props.match.params.containerId;
     this.getContainer(containerId)
     .then((res) => {
-      console.log('ContainerAdd.getData.res', res);
       this.setState({
         lab: res.data.lab,
         container: res.data,
@@ -210,16 +209,18 @@ class ContainerAdd extends React.Component {
               </div>
               <div className="col-12 col-lg-5">
                 <Grid 
+                  {...this.props}
                   demo={false}
                   selectLocations={true}
                   selectSingle={itemType === 'physical'}
                   newItemLocations={this.state.newItemLocations}
                   addLocation={this.addLocation}
                   removeLocation={this.removeLocation}
-                  recordType="Container"
+                  type="Container"
                   record={this.state.container}
                   containers={this.state.containers}
                   physicals={this.state.physicals}
+                  lab={this.state.lab}
                 />
               </div>
             </>

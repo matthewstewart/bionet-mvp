@@ -232,16 +232,18 @@ class LabAdd extends React.Component {
               </div>
               <div className="col-12 col-lg-5">
                 <Grid 
+                  {...this.props}
                   demo={false}
                   selectLocations={true}
                   selectSingle={itemType === 'physical'}
                   newItemLocations={this.state.newItemLocations}
                   addLocation={this.addLocation}
                   removeLocation={this.removeLocation}
-                  recordType="Lab"
+                  type="Lab"
                   record={this.state.lab}
                   containers={labContainers}
                   physicals={labPhysicals}
+                  lab={this.state.lab}
                 />
               </div>
             </>

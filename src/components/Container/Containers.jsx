@@ -227,7 +227,7 @@ class Containers extends Component {
       return (
         <div key={shortid.generate()} className="d-block">
           <div className="container-fluid pl-0 pr-0">
-            <div className="row no-gutters">
+            <div className="row no-gutters bg-info">
               <div className={userIsMember ? "col-7 col-md-8 col-lg-9" : "col-12"}>
                 <Link to={`/containers/${thisContainer._id}`} className="list-group-item list-group-item-action bg-info text-light rounded-0">
                   <h5 className="mb-0">
@@ -236,7 +236,7 @@ class Containers extends Component {
                 </Link>  
               </div> 
               {userIsMember ? (
-                <div className="col-5 col-md-4 col-lg-3 text-center">
+                <div className="col text-center" style={{'minWidth': '130px'}}>
                   <button 
                     className="list-group-item list-group-item-action bg-primary text-light rounded-0"
                     onClick={this.onChangeMode}
@@ -248,7 +248,8 @@ class Containers extends Component {
                       id={thisContainer._id}
                       mode='Move Step 1'
                     >
-                      <i className="mdi mdi-arrow-up-down-bold-outline mr-2" />Move
+                      <i className="mdi mdi-arrow-up-down-bold-outline mr-1" />
+                      Move
                     </h5>
                   </button>
                 </div> 

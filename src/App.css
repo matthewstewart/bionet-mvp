@@ -14,8 +14,12 @@
   border-color: rgb(4, 32, 13);
 }
 
-.bg-dark-green {
+.bg-dark-green, .dropdown-menu {
 	background-color: rgb(23,43,47) !important;
+}
+
+.dropdown-divider {
+	border-color: rgb(76,106,52);
 }
 
 p.card-text {
@@ -31,12 +35,23 @@ p.card-text {
 	margin-right: 10px;
 }
 
+.btn-xs {
+	padding: .25rem .5rem;
+	font-size: .875rem;
+	line-height: 1.5;
+	border-radius: .2rem;
+}
+
 .card-title span{
 	font-size: 1.75em;
 }
 
 button.dropdown-item:hover {
 	cursor: pointer;
+}
+
+.dropdown-menu {
+	padding: 0;
 }
 
 .join-request span {

@@ -212,9 +212,10 @@ class App extends React.Component {
   }
 
   render() {
+    //console.log('App.state', this.state);
     return (
       <div className="App">
-        <Navigation {...this.state} logoutCurrentUser={this.logoutCurrentUser}/>
+        <Navigation {...this.state} logoutCurrentUser={this.logoutCurrentUser} getCurrentUserLabs={this.getCurrentUserLabs}/>
         <main className="viewport-container">
 
           <Switch>
@@ -227,9 +228,9 @@ class App extends React.Component {
 
           <Switch>
             <Route path='/containers/:containerId/add/:itemType' component={WaitForComponent(ContainerAdd, this.state, this.getCurrentUserLabs)}/>
-            <Route path="/containers/:containerId/edit" exact component={WaitForComponent(ContainerEdit, this.state, this.getCurrentUserLabs)}/>
+            <Route path="/containers/:containerId/edit" component={WaitForComponent(ContainerEdit, this.state, this.getCurrentUserLabs)}/>
             <Route path='/containers/:containerId/delete' component={WaitForComponent(ContainerDelete, this.state, this.getCurrentUserLabs)}/>
-            <Route path="/containers/:containerId" exact component={WaitForComponent(ContainerProfile, this.state, this.getCurrentUserLabs)}/>
+            <Route path="/containers/:containerId" component={WaitForComponent(ContainerProfile, this.state, this.getCurrentUserLabs)}/>
           </Switch>  
 
           <Switch>

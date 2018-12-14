@@ -232,14 +232,16 @@ class LabEdit extends React.Component {
           {(isLoggedIn) ? (
             <div className="col-12 col-lg-5">
               <Grid 
+                {...this.props}
                 demo={true}
                 editMode={true}
                 formData={this.state.form}
                 selectLocations={false}
-                recordType="Lab"
+                type="Lab"
                 record={this.state.form}
                 containers={this.state.containers}
                 physicals={this.state.physicals}
+                lab={this.state.lab}
               />
             </div>
           ) : null }

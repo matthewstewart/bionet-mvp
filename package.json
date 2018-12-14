@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "crypto-js": "^3.1.9-1",
+    "node-sass": "^4.11.0",
     "react": "^16.6.0",
     "react-bootstrap-typeahead": "^3.2.4",
     "react-dom": "^16.6.0",
