@@ -64,19 +64,13 @@ class GridToolbar extends React.Component {
         </div> 
       ) : null }
       {(userIsRequestingMembership) ? (
-        <div className="btn-group" role="group">
+        <div className="btn-group" role="group">                            
           <button 
-            className="btn btn-warning rounded-0 disabled"
-          >
-            <i className="mdi mdi-account-plus mr-1" />
-            Membership Pending Approval
-          </button>                             
-          <button 
-            className="btn btn-sm btn-secondary rounded-0"
+            className="btn btn-sm btn-warning rounded-0"
             onClick={this.props.onCancelRequestLabMembership}
           >
             <i className="mdi mdi-account-plus mr-1" />
-            Cancel Request
+            Cancel Membership Request
           </button>
         </div> 
       ) : null }               
