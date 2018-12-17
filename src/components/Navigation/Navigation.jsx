@@ -21,6 +21,7 @@ class Navigation extends Component {
     this.getData = this.getData.bind(this);
     this.onAcceptRequestLabMembership = this.onAcceptRequestLabMembership.bind(this);
     this.onDenyRequestLabMembership = this.onDenyRequestLabMembership.bind(this);
+    this.onCancelRequestLabMembership = this.onCancelRequestLabMembership.bind(this);
     this.updateLab = this.updateLab.bind(this);
   }
 
@@ -115,9 +116,7 @@ class Navigation extends Component {
   }
 
   onAcceptRequestLabMembership(e) {
-    console.log('onAccept');
     let acceptedRequestId = e.target.getAttribute('userid');
-    console.log('accept:', acceptedRequestId);
     let labId = e.target.getAttribute('labid');
     let labs = this.state.labs;
     let lab;
@@ -144,12 +143,10 @@ class Navigation extends Component {
     }  
     lab.users = users;
     lab.joinRequests = joinRequests;
-    console.log('lab pre save', lab);
     this.updateLab(lab);
   }
 
   onDenyRequestLabMembership(e) {
-    console.log('onDeny');
     let deniedRequestId = e.target.getAttribute('userid');
     let labId = e.target.getAttribute('labid');
     let labs = this.state.labs;
@@ -176,10 +173,35 @@ class Navigation extends Component {
     this.updateLab(lab);
   }
 
+  onCancelRequestLabMembership(e) {
+    let labId = e.target.getAttribute('labid');
+    let labs = this.state.labs;
+    let lab;
+    let users = []; 
+    let joinRequests = [];
+    for(let i = 0; i < labs.length; i++){
+      if (labId === labs[i]._id) {
+        lab = labs[i];
+      }
+    }
+    for(let i = 0; i < lab.users.length; i++){
+      let user = lab.users[i];
+      users.push(user._id);
+    };
+    for(let i = 0; i < lab.joinRequests.length; i++){
+      let request = lab.joinRequests[i];
+      if (this.props.currentUser._id !== request._id){
+        joinRequests.push(request._id);
+      }
+    };
+    lab.users = users;
+    lab.joinRequests = joinRequests;
+    this.updateLab(lab);
+  }
+
   updateLab(lab) {
     this.postLab(lab)
     .then((res) => {
-      console.log('postLab.res', res);
       this.getData()
       .then((res) => {
         let type, labs;
@@ -194,7 +216,6 @@ class Navigation extends Component {
           type = res.type;
           labs = res.labs; 
         }
-        console.log('getData.res', res);
         this.setState({
           selectedRecordType: type,
           selectedRecord,
@@ -216,7 +237,6 @@ class Navigation extends Component {
       } else if (res.type === 'Container') {
         lab = res.data.lab; 
       }
-      console.log('getData.res', res);
       this.setState({
         selectedRecordType: res.type,
         selectedRecord,
@@ -309,6 +329,21 @@ class Navigation extends Component {
         </NavbarDropdownLink>
       )
     });
+    const hasLabsPendingApproval = isLoggedIn && currentUser && currentUser.labsRequested && currentUser.labsRequested.length > 0;
+    const labsPendingApproval = hasLabsPendingApproval && currentUser.labsRequested.map((labRequest, index) => {
+      return (
+        <div className="dropdown-header text-light d-block clearfix" key={shortid.generate()}>
+        <span>{labRequest.name}</span>
+        <div className="btn-group float-right">
+          <button 
+            labid={labRequest._id}
+            className="btn btn-xs btn-warning"
+            onClick={this.onCancelRequestLabMembership}
+          >Cancel</button>
+        </div> 
+      </div>        
+      );
+    }); 
     return (
       <Navbar dark type="dark" className="bg-dark-green">
         <NavbarBrand imgSrc={logo} imgAlt="BioNet Logo" width="40">
@@ -328,6 +363,15 @@ class Navigation extends Component {
                   </>  
                 ) : null }  
                 
+                {(hasLabsPendingApproval) ? (
+                  <>
+                    <div className="dropdown-divider mt-0"></div>
+                    <h6 className="dropdown-header text-light">Labs Pending Approval - <i className="mdi mdi-teach mr-1"/>({labsPendingApproval.length})</h6>
+                    <div className="dropdown-divider mb-0"></div>
+                    {labsPendingApproval}
+                  </>
+                ) : null } 
+
                 {(hasLabsNotJoined) ? (
                   <>
                     <div className="dropdown-divider mt-0"></div>
