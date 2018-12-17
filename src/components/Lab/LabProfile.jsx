@@ -235,7 +235,8 @@ class LabProfile extends React.Component {
     let joinRequests = [];
     for(let i = 0; i < lab.users.length; i++){
       let user = lab.users[i];
-      users.push(user._id);
+      console.log('onRequestLabMembership.user', user);
+      users.push(user);
     };
     for(let i = 0; i < lab.joinRequests.length; i++){
       let request = lab.joinRequests[i];
@@ -254,7 +255,7 @@ class LabProfile extends React.Component {
     let joinRequests = [];
     for(let i = 0; i < lab.users.length; i++){
       let user = lab.users[i];
-      users.push(user._id);
+      users.push(user);
     };
     for(let i = 0; i < lab.joinRequests.length; i++){
       let request = lab.joinRequests[i];
