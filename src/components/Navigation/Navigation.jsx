@@ -206,33 +206,33 @@ class Navigation extends Component {
 
   render() {
     //let pathName = this.props.location.pathname;
-    const params = String(this.props.location.pathname).split('/');
-    const hasParams = params.length > 2;
-    const type = hasParams ? params[1] === "containers" ? "Container" : "Lab" : "None";
+    // const params = String(this.props.location.pathname).split('/');
+    //const hasParams = params.length > 2;
+    //const type = hasParams ? params[1] === "containers" ? "Container" : "Lab" : "None";
     // console.log('Navigation.props.match.params', type);
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
     const labs = this.props.labs || [];
     const labsJoined = isLoggedIn ? currentUser.labs.map((lab, index) => {
-      const joinRequests = lab.joinRequests.map((user, userIndex) => {
-        return (
-          <div className="dropdown-header text-light d-block clearfix" key={shortid.generate()}>
-            <span>{user.username}</span>
-            <div className="btn-group float-right">
-              <button 
-                className="btn btn-xs btn-success"
-                userid={user._id}
-                onClick={this.onAcceptRequestLabMembership}
-              >Accept</button>
-              <button 
-                className="btn btn-xs btn-danger"
-                userid={user._id}
-                onClick={this.onDenyRequestLabMembership}
-              >Deny</button>
-            </div> 
-          </div>       
-        );
-      });
+      // const joinRequests = lab.joinRequests.map((user, userIndex) => {
+      //   return (
+      //     <div className="dropdown-header text-light d-block clearfix" key={shortid.generate()}>
+      //       <span>{user.username}</span>
+      //       <div className="btn-group float-right">
+      //         <button 
+      //           className="btn btn-xs btn-success"
+      //           userid={user._id}
+      //           onClick={this.onAcceptRequestLabMembership}
+      //         >Accept</button>
+      //         <button 
+      //           className="btn btn-xs btn-danger"
+      //           userid={user._id}
+      //           onClick={this.onDenyRequestLabMembership}
+      //         >Deny</button>
+      //       </div> 
+      //     </div>       
+      //   );
+      // });
       return (
         <div key={shortid.generate()}>
           <NavbarDropdownLink 

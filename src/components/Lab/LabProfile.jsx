@@ -5,7 +5,7 @@ import appConfig from '../../configuration.js';
 import Grid from '../Grid/Grid';
 import Containers from '../Container/Containers';
 import Physicals from '../Physical/Physicals';
-import LabToolbar from '../Lab/LabToolbar';
+//import LabToolbar from '../Lab/LabToolbar';
 
 class LabProfile extends React.Component {
 

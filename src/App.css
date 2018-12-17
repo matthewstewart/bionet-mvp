@@ -55,7 +55,7 @@ button.dropdown-item:hover {
 	padding: 0;
 }
 
-a.dropdown-item {
+a.dropdown-item, a.dropdown-item.disabled {
 	color: white;
 }
 
