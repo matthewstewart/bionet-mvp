@@ -16,6 +16,7 @@
 
 .bg-dark-green, .dropdown-menu {
 	background-color: rgb(23,43,47) !important;
+	color: rgb(248,249,250) !important;
 }
 
 .dropdown-divider {
@@ -52,6 +53,10 @@ button.dropdown-item:hover {
 
 .dropdown-menu {
 	padding: 0;
+}
+
+a.dropdown-item {
+	color: white;
 }
 
 .join-request span {
