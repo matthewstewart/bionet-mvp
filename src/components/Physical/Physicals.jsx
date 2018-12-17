@@ -378,7 +378,12 @@ class Physicals extends Component {
                       mode='Move Step 1'
                       onClick={this.onChangeMode}
                     >
-                      <i className="mdi mdi-arrow-up-down-bold-outline mr-2" />Move
+                      <i 
+                        className="mdi mdi-arrow-up-down-bold-outline mr-2"
+                        id={thisPhysical._id}
+                        mode='Move Step 1'
+                        onClick={this.onChangeMode} 
+                      />Move
                     </h5>
                   </button>
                 </div> 

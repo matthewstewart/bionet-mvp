@@ -248,7 +248,11 @@ class Containers extends Component {
                       id={thisContainer._id}
                       mode='Move Step 1'
                     >
-                      <i className="mdi mdi-arrow-up-down-bold-outline mr-1" />
+                      <i 
+                        className="mdi mdi-arrow-up-down-bold-outline mr-1" 
+                        id={thisContainer._id}
+                        mode='Move Step 1'
+                      />
                       Move
                     </h5>
                   </button>
