@@ -258,7 +258,7 @@ class Grid extends Component {
                 <span>
                   <i className={recordIconClasses} />
                   {this.props.record.name || `(Select A ${this.props.type} Name)`}
-                </span>  
+                </span>
               </>
             ) : (
               <>
@@ -268,7 +268,8 @@ class Grid extends Component {
                 </span>
               </>
             )} 
-            <GridToolbar 
+            {(this.props.isLoggedIn) ? (
+              <GridToolbar 
                 {...this.props}
                 type={this.props.type}
                 lab={this.props.lab}
@@ -276,7 +277,8 @@ class Grid extends Component {
                 onRequestLabMembership={this.props.onRequestLabMembership}
                 onCancelRequestLabMembership={this.props.onCancelRequestLabMembership}
                 iconClasses={recordIconClasses}
-            />   
+              />
+            ) : null }
           </div>
         </div>
         <div className="card-body" style={{'maxHeight': '70vh', 'overflow': 'scroll'}}>

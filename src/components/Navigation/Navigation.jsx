@@ -118,20 +118,30 @@ class Navigation extends Component {
     console.log('onAccept');
     let acceptedRequestId = e.target.getAttribute('userid');
     console.log('accept:', acceptedRequestId);
-    let lab = this.state.lab;
+    let labId = e.target.getAttribute('labid');
+    let labs = this.state.labs;
+    let lab;
+    for(let i = 0; i < labs.length; i++){
+      if (labId === labs[i]._id) {
+        lab = labs[i];
+      }
+    }
     let users = [];
     let joinRequests = [];
-    for(let i = 0; i < lab.users.length; i++){
-      let user = lab.users[i];
-      users.push(user._id);
-    };
-    users.push(acceptedRequestId);
-    for(let i = 0; i < lab.joinRequests.length; i++){
-      let request = lab.joinRequests[i];
-      if (acceptedRequestId !== request._id){
-        joinRequests.push(request._id);
-      }
-    };
+    if (lab && lab.users && lab.joinRequests) {
+      for(let i = 0; i < lab.users.length; i++){
+        let user = lab.users[i];
+        users.push(user._id);
+      };
+    
+      users.push(acceptedRequestId);
+      for(let i = 0; i < lab.joinRequests.length; i++){
+        let request = lab.joinRequests[i];
+        if (acceptedRequestId !== request._id){
+          joinRequests.push(request._id);
+        }
+      };
+    }  
     lab.users = users;
     lab.joinRequests = joinRequests;
     console.log('lab pre save', lab);
@@ -141,7 +151,14 @@ class Navigation extends Component {
   onDenyRequestLabMembership(e) {
     console.log('onDeny');
     let deniedRequestId = e.target.getAttribute('userid');
-    let lab = this.state.lab;
+    let labId = e.target.getAttribute('labid');
+    let labs = this.state.labs;
+    let lab;
+    for(let i = 0; i < labs.length; i++){
+      if (labId === labs[i]._id) {
+        lab = labs[i];
+      }
+    }
     let users = [];
     let joinRequests = [];
     for(let i = 0; i < lab.users.length; i++){
@@ -165,19 +182,24 @@ class Navigation extends Component {
       console.log('postLab.res', res);
       this.getData()
       .then((res) => {
+        let type, labs;
         let lab = {};
         let selectedRecord = {};
-        if (res.type === 'Lab') {
+        if (res && res.labs && res.type && res.type === 'Lab') {
           lab = res.data;
-        } else if (res.type === 'Container') {
-          lab = res.data.lab; 
+          type = res.type;
+          labs = res.labs;
+        } else if (res && res.labs && res.type && res.type === 'Container') {
+          lab = res.data.lab;
+          type = res.type;
+          labs = res.labs; 
         }
         console.log('getData.res', res);
         this.setState({
-          selectedRecordType: res.type,
+          selectedRecordType: type,
           selectedRecord,
           lab,
-          labs: res.labs
+          labs
         });
         this.props.getCurrentUserLabs(this.props.currentUser);
       });
@@ -214,25 +236,27 @@ class Navigation extends Component {
     const currentUser = this.props.currentUser;
     const labs = this.props.labs || [];
     const labsJoined = isLoggedIn ? currentUser.labs.map((lab, index) => {
-      // const joinRequests = lab.joinRequests.map((user, userIndex) => {
-      //   return (
-      //     <div className="dropdown-header text-light d-block clearfix" key={shortid.generate()}>
-      //       <span>{user.username}</span>
-      //       <div className="btn-group float-right">
-      //         <button 
-      //           className="btn btn-xs btn-success"
-      //           userid={user._id}
-      //           onClick={this.onAcceptRequestLabMembership}
-      //         >Accept</button>
-      //         <button 
-      //           className="btn btn-xs btn-danger"
-      //           userid={user._id}
-      //           onClick={this.onDenyRequestLabMembership}
-      //         >Deny</button>
-      //       </div> 
-      //     </div>       
-      //   );
-      // });
+      const joinRequests = lab.joinRequests.map((user, userIndex) => {
+        return (
+          <div className="dropdown-header text-light d-block clearfix" key={shortid.generate()}>
+            <span>{user.username}</span>
+            <div className="btn-group float-right">
+              <button 
+                className="btn btn-xs btn-success"
+                labid={lab._id}
+                userid={user._id}
+                onClick={this.onAcceptRequestLabMembership}
+              >Accept</button>
+              <button 
+                className="btn btn-xs btn-danger"
+                labid={lab._id}
+                userid={user._id}
+                onClick={this.onDenyRequestLabMembership}
+              >Deny</button>
+            </div> 
+          </div>       
+        );
+      });
       return (
         <div key={shortid.generate()}>
           <NavbarDropdownLink 
@@ -241,14 +265,14 @@ class Navigation extends Component {
           >
             <i className="mdi mdi-teach mr-2"/>{lab.name}
           </NavbarDropdownLink>
-          {/* {(lab.joinRequests.length > 0) ? (
+          {(lab.joinRequests.length > 0) ? (
             <>
               <div className="dropdown-divider mt-0"></div>
               <h6 className="dropdown-header text-light">{lab.name} Join Requests - <i className="mdi mdi-account-plus mr-1"/>({lab.joinRequests.length })</h6>
               <div className="dropdown-divider mb-0"></div>
               {joinRequests}
             </>
-          ) : null } */}
+          ) : null }
         </div>
       )
     }) : [];
@@ -291,7 +315,7 @@ class Navigation extends Component {
         </NavbarBrand>
         <NavbarNav>
 
-          <NavbarDropdown id="user-dropdown" label={currentUser ? currentUser.username : "Labs"} className="text-light">
+          <NavbarDropdown id="user-dropdown" label={isLoggedIn ? currentUser.username : "Labs"} className="text-light">
             
             {(isLoggedIn) ? (
               <>
@@ -332,11 +356,6 @@ class Navigation extends Component {
 
           {(isLoggedIn) ? (
             <>
-              {/* <NavbarDropdown id="user-dropdown" className="text-capitalize" label={currentUser.username}>
-                <h6 className="dropdown-header">My Labs</h6>
-                <div className="dropdown-divider"></div>
-                {labsJoined}
-              </NavbarDropdown> */}
               <NavbarLink to="/about">About</NavbarLink>
               <li className="nav-item">
                 <a 
