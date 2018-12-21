@@ -1,15 +1,17 @@
 import React, { Suspense, lazy } from 'react';
-import { Route, Switch } from "react-router-dom";
+import { withRouter, Route, Switch } from "react-router-dom";
 import Crypto from 'crypto-js';
 import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
 import Loading from './components/Loading/Loading';
 import Auth from "./modules/Auth";
+import Api from './modules/Api';
 import appConfig from './configuration.js';
 import Navigation from './components/Navigation/Navigation';
 import Footer from './components/Footer/Footer';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import Profile from './components/Profile';
 
 const Landing = lazy(() => import('./components/Landing'));
 const About = lazy(() => import('./components/About'));
@@ -44,135 +46,16 @@ class App extends React.Component {
       currentUser: {},
       labs: [],
       virtuals: [],
-      physicals: []
+      physicals: [],
+      lab: {},
+      selectedRecordType: {},
+      selectedRecord: {},
+      params: []
     };
     this.loginCurrentUser = this.loginCurrentUser.bind(this);
     this.logoutCurrentUser = this.logoutCurrentUser.bind(this);
-    this.setCurrentUser = this.setCurrentUser.bind(this);
-    this.getCurrentUserLabs = this.getCurrentUserLabs.bind(this);
-  }
-
-  getCurrentUserLabs(currentUser) {
-    this.getLabs()
-    .then((res) => {
-      //console.log('getCurrentUserLabs.res', res);
-      let labs = res.data;
-      //console.log('currentUser', currentUser);
-      //console.log('labs', labs);
-      currentUser['labs'] = [];
-      currentUser['labsRequested'] = [];
-      currentUser['labsToJoin'] = [];
-      for(let i = 0; i < labs.length; i++) {
-        let lab = labs[i];
-        let labIsJoined = false;
-        let labIsRequested = false;
-        for(let j = 0; j < lab.users.length; j++) {
-          let labUser = lab.users[j];
-          if (labUser._id === currentUser._id){
-            labIsJoined = true;
-            currentUser.labs.push(lab);
-          } 
-        }
-        for(let j = 0; j < lab.joinRequests.length; j++) {
-          let joinRequest = lab.joinRequests[j];
-          if (joinRequest._id === currentUser._id){
-            labIsRequested = true;
-            currentUser.labsRequested.push(lab);
-          }
-        }
-        if (!labIsJoined && !labIsRequested) {
-          currentUser.labsToJoin.push(lab);
-        }
-      }
-      this.getVirtuals()
-      .then((res) => {
-        //console.log('getVirtuals.res', res);
-        let virtuals = res.data;
-        this.getPhysicals()
-        .then((res) => {
-          this.setState({
-            isLoggedIn: true,
-            currentUser,
-            labs,
-            virtuals,
-            physicals: res.data
-          });
-        });  
-      })
-    });
-  }
-
-  async getLabs() {
-    try {  
-      let labsRequest = new Request(`${appConfig.apiBaseUrl}/labs`, {
-        method: 'GET',
-        // headers: new Headers({
-        //   'Authorization': `Bearer ${Auth.getToken()}`
-        // })
-      });
-      let labRes = await fetch(labsRequest);
-      let labsResponse = labRes.json();
-      return labsResponse;
-    } catch (error) {
-      console.log('App.getLabs', error);
-    }   
-  }
-
-  async getVirtuals() {
-    try {  
-      let virtualsRequest = new Request(`${appConfig.apiBaseUrl}/virtuals`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let virtualRes = await fetch(virtualsRequest);
-      let virtualsResponse = virtualRes.json();
-      return virtualsResponse;
-    } catch (error) {
-      console.log('App.getVirtuals', error);
-    }   
-  }
-
-  async getPhysicals() {
-    try {  
-      let physicalsRequest = new Request(`${appConfig.apiBaseUrl}/physicals`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let physicalRes = await fetch(physicalsRequest);
-      let physicalsResponse = physicalRes.json();
-      return physicalsResponse;
-    } catch (error) {
-      console.log('App.getVirtuals', error);
-    }   
-  }
-
-  setCurrentUser() {
-    //Auth.deauthenticateUser();
-    if (Auth.isUserAuthenticated()) {
-      this.loginCurrentUser()
-      .then((res) => {
-        let currentUser = res.user;
-        currentUser['gravatarUrl'] = `https://www.gravatar.com/avatar/${Crypto.MD5(currentUser.email).toString()}?s=100`;
-        this.getCurrentUserLabs(currentUser);
-      });
-    } else {
-      this.getVirtuals()
-      .then((res) => {
-        //console.log('getVirtuals.res', res);
-        let virtuals = res.data;
-        this.getPhysicals()
-        .then((res) => {
-          this.setState({
-            virtuals,
-            physicals: res.data
-          });
-        });  
-      });  
-    }  
+    this.getData = this.getData.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   async loginCurrentUser() {
@@ -201,21 +84,160 @@ class App extends React.Component {
     });
   }
 
-  componentDidMount() {
-    this.getLabs()
+  async getData() {
+    let result = {};
+    // get labs
+    let labsResponse = await Api.getAll('labs');
+    result.labs = labsResponse.data; 
+    // get physicals
+    let physicalsResponse = await Api.getAll('physicals');
+    result.physicals = physicalsResponse.data; 
+    // get virtuals
+    let virtualsResponse = await Api.getAll('virtuals');
+    result.virtuals = virtualsResponse.data;  
+    //console.log('App.getData.result', result);
+
+    // detect if route is for a specific lab or container
+    const params = String(this.props.location.pathname).split('/');
+    result.params = params;
+
+    //console.log('App.getData.params', params);
+    const hasParams = params.length > 2;
+    let type;
+    switch (params[1]) {
+      case 'labs':
+        type = 'Lab';
+        break;
+      case 'containers':
+        type = 'Container';
+        break;
+      case 'physicals':
+        type = 'Physical';
+        break;
+      case 'virtuals':
+        type = 'Virtual';
+        break;  
+      default: 
+        type = null;     
+    }
+    result.selectedRecordType = type;
+
+    let lab; //eslint-disable-line
+    let selectedRecord; //eslint-disable-line
+    let selectedRecordId = hasParams ? params[2] : null;
+    switch (type) {
+      case 'Lab':
+        for(let i = 0; i < result.labs.length; i++){
+          let record = result.labs[i];
+          if (selectedRecordId && String(record._id) === String(selectedRecordId)) {
+            let populateResponse = await Api.getOne('labs', record._id);
+            let populatedLab = populateResponse.data;
+            let allLabChildren = await getChildren(populatedLab);
+            populatedLab.allChildren = allLabChildren;
+            lab = populatedLab;
+            selectedRecord = populatedLab;
+          }
+        }
+        break;
+      default:
+        lab = null;
+    }
+    result.lab = lab;
+    result.selectedRecord = selectedRecord;
+
+    // currentUser
+
+    let currentUser = {};
+    let isLoggedIn = false;
+    
+    if (Auth.isUserAuthenticated()) {
+      let response = await this.loginCurrentUser();
+      currentUser = response.user;
+      isLoggedIn = true;
+      currentUser.gravatarUrl = `https://www.gravatar.com/avatar/${Crypto.MD5(currentUser.email).toString()}?s=100`;
+      let labs = result.labs;
+      currentUser['labs'] = [];
+      currentUser['labsRequested'] = [];
+      currentUser['labsToJoin'] = [];
+      for(let i = 0; i < labs.length; i++) {
+        let lab = labs[i];
+        let labIsJoined = false;
+        let labIsRequested = false;
+        for(let j = 0; j < lab.users.length; j++) {
+          let labUser = lab.users[j];
+          if (labUser._id === currentUser._id){
+            labIsJoined = true;
+            currentUser.labs.push(lab);
+          } 
+        }
+        for(let j = 0; j < lab.joinRequests.length; j++) {
+          let joinRequest = lab.joinRequests[j];
+          if (joinRequest._id === currentUser._id){
+            labIsRequested = true;
+            currentUser.labsRequested.push(lab);
+          }
+        }
+        if (!labIsJoined && !labIsRequested) {
+          currentUser.labsToJoin.push(lab);
+        }
+      }      
+    }
+    result.isLoggedIn = isLoggedIn;
+    result.currentUser = currentUser;
+    //console.log('App.getData.result', result);
+    return result;
+  }
+
+  refresh() {
+    this.getData()
     .then((res) => {
-      this.setState({
-        labs: res.data
-      });
-    })
-    this.setCurrentUser();
+      //console.log('App.refresh.res', res);
+      let newState = {
+        lab: res.lab,
+        labs: res.labs,
+        physicals: res.physicals,
+        virtuals: res.virtuals,
+        params: res.params,
+        selectedRecordType: res.selectedRecordType,
+        selectedRecord: res.selectedRecord,
+        isLoggedIn: res.isLoggedIn,
+        currentUser: res.currentUser
+      };
+      console.log('App.refresh.state', newState);
+      this.setState(newState);
+    });
+  }
+
+  componentDidMount() {
+    this.refresh();
+  }
+
+  componentDidUpdate() {
+    const params = String(this.props.location.pathname).split('/');
+    const hasParams = params.length > 2;
+    const oldParams = this.state.params;
+    const hasOldParams = oldParams.length > 2;
+    const newParamsAdded = hasParams && oldParams.length === 2;
+    const endpointsDontMatch = hasParams && hasOldParams && String(params[1]) !== String(oldParams[1]);
+    const idsDontMatch = hasParams && hasOldParams && String(params[2]) !== String(oldParams[2]);
+    const paramsHaveChanged = newParamsAdded || endpointsDontMatch || idsDontMatch;
+    if (paramsHaveChanged) {
+      console.log('parameters have changed... refreshing...');
+      //console.log('App.componentDidUpdate.state', this.state);
+      this.refresh();
+    }  
   }
 
   render() {
     //console.log('App.state', this.state);
     return (
       <div className="App">
-        <Navigation {...this.state} logoutCurrentUser={this.logoutCurrentUser} getCurrentUserLabs={this.getCurrentUserLabs}/>
+        <Navigation 
+          {...this.state} 
+          logoutCurrentUser={this.logoutCurrentUser} 
+          getCurrentUserLabs={this.getCurrentUserLabs}
+          refresh={this.refresh}
+        />
         <main className="viewport-container">
 
           <Switch>
@@ -223,7 +245,8 @@ class App extends React.Component {
             <Route path='/labs/:labId/add/:itemType' component={WaitForComponent(LabAdd, this.state, this.getCurrentUserLabs)}/>
             <Route path='/labs/:labId/edit' component={WaitForComponent(LabEdit, this.state, this.getCurrentUserLabs)}/>
             <Route path='/labs/:labId/delete' component={WaitForComponent(LabDelete, this.state, this.getCurrentUserLabs)}/>
-            <Route path="/labs/:labId" component={WaitForComponent(LabProfile, this.state, this.getCurrentUserLabs)}/>
+            {/* <Route path="/labs/:labId" render={(props) => (<Profile {...props} {...this.state}/>)} /> */}
+            <Route path="/labs/:labId" component={WaitForComponent(LabProfile, this.state, this.refresh)}/>
           </Switch>  
 
           <Switch>
@@ -247,4 +270,31 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withRouter(App);
+
+let allChildren = {
+  containers: [],
+  physicals: []
+};
+async function getAllChildren (record) {
+  //console.log('getAllChildren', record);
+  if (record.children && record.children.containers && record.children.physicals) {
+    for(let i = 0; i < record.children.containers.length; i++){
+      let container = record.children.containers[i];
+      allChildren.containers.push(container);
+      await getAllChildren(container);
+    }
+    for(let i = 0; i < record.children.physicals.length; i++){
+      let physical = record.children.physicals[i];
+      allChildren.physicals.push(physical);
+    }
+  }
+}
+
+async function getChildren (record) {
+  if (record) { 
+    console.log('getChildren', record);
+    let res = await getAllChildren(record);
+    return allChildren;
+  }  
+}

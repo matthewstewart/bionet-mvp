@@ -197,36 +197,42 @@ class LabProfile extends React.Component {
     // }); 
   }
 
-  getData() {
-    let labId = this.props.match.params.labId;
-    this.getLab(labId)
-    .then((res) => {
-      //console.log('getData.res', res);
-      let lab = res.data;
-      let virtuals = res.virtuals;
-      this.getContainers()
+  async getData() {
+    try {
+      console.log('getData.props', this.props);
+      let labId = this.props.match.params.labId;
+      this.getLab(labId)
       .then((res) => {
-        let allLabContainers = res.data;
-        let containers = [];
-        let labContainers = [];
-        for(let i = 0; i < allLabContainers.length; i++){
-          let labContainer = allLabContainers[i];
-          
-          if (labContainer.lab && labContainer.lab._id === labId) {
-            labContainers.push(labContainer);
-            if (labContainer.parent === null) {
-              containers.push(labContainer);
+        //console.log('getData.res', res);
+        //let lab = res.data;
+        let lab = this.props.lab;
+        let virtuals = this.props.virtuals;
+        this.getContainers()
+        .then((res) => {
+          let allLabContainers = res.data;
+          let containers = [];
+          let labContainers = [];
+          for(let i = 0; i < allLabContainers.length; i++){
+            let labContainer = allLabContainers[i];
+            
+            if (labContainer.lab && labContainer.lab._id === labId) {
+              labContainers.push(labContainer);
+              if (labContainer.parent === null) {
+                containers.push(labContainer);
+              }
             }
           }
-        }
-        this.setState({
-          lab,
-          labContainers,
-          containers,
-          virtuals
+          this.setState({
+            lab,
+            labContainers,
+            containers,
+            virtuals
+          });
         });
       });
-    });
+    } catch (error) {
+      console.log(error);
+    }  
   }
 
   onRequestLabMembership(e) {
@@ -345,13 +351,15 @@ class LabProfile extends React.Component {
   }
 
   componentDidMount() {
+    console.log('props', this.props)
     this.getData();
   }
 
   render() {
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
-    const lab = this.state.lab;
+    const lab = this.props.lab;
+    const labPopulated = Object.keys(lab).length > 0;
     let userIsMember = false;
     if (isLoggedIn) {
       for (let i = 0; i < currentUser.labs.length; i++) {
@@ -417,16 +425,6 @@ class LabProfile extends React.Component {
               <div className="card-header rounded-0 bg-dark text-light">
                 <div className="card-title mb-0 text-capitalize">
                   <span><i className="mdi mdi-teach" /> {lab.name}</span>
-                  {/* {(isLoggedIn) ? (
-                  <LabToolbar 
-                    {...this.props}
-                    type="Lab"
-                    lab={this.state.lab}
-                    onRevokeLabMembership={this.onRevokeLabMembership}
-                    onRequestLabMembership={this.onRequestLabMembership}
-                    onCancelRequestLabMembership={this.onCancelRequestLabMembership}
-                  />
-                  ) : null } */}
                 </div>
               </div>
                         
@@ -457,20 +455,21 @@ class LabProfile extends React.Component {
             </div>
 
               <Containers 
-                labContainers={this.state.labContainers}
-                labPhysicals={labAllPhysicals}
-                containers={this.state.containers} 
+                labContainers={labPopulated ? this.props.lab.allChildren.containers : []}
+                labPhysicals={labPopulated ? this.props.lab.allChildren.physicals : []}
+                //containers={this.state.containers}
+                containers={labPopulated ? this.props.lab.allChildren.containers : []} 
                 currentUser={this.props.currentUser}
                 userIsMember={userIsMember}
                 refresh={this.props.refresh}
-                physicals={labChildPhysicals}                
+                physicals={labPopulated ? this.props.lab.allChildren.physicals : []}                
               /> 
 
               <Physicals 
-                labContainers={this.state.labContainers}
-                labPhysicals={labAllPhysicals}
-                containers={this.state.containers} 
-                physicals={labChildPhysicals} 
+                labContainers={labPopulated ? this.props.lab.allChildren.containers : []}
+                labPhysicals={labPopulated ? this.props.lab.allChildren.physicals : []}
+                containers={labPopulated ? this.props.lab.allChildren.containers : []}  
+                physicals={labPopulated ? this.props.lab.allChildren.physicals : []} 
                 currentUser={this.props.currentUser}
                 userIsMember={userIsMember}
                 refresh={this.props.refresh}

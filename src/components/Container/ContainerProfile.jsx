@@ -269,6 +269,7 @@ class ContainerProfile extends React.Component {
       let container = res.data; 
       let lab = container.lab;
       //console.log('ContainerProfile.getData.res.lab', lab);
+      console.log('getContainer.res.data', res.data);
       let physicals = res.physicals;
       this.getPath(lab._id, container._id)
       .then((res) => {

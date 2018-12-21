@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import Auth from "../../modules/Auth";
 import appConfig from '../../configuration.js';
+//import Api from '../../modules/Api';
 import { Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarDropdown, NavbarDropdownLink } from '../Bootstrap/components';
 import shortid from 'shortid';
 import logo from './images/bionet-logo.png';
@@ -10,48 +11,18 @@ class Navigation extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = {  
       labs: [],
       lab: {},
       selectedRecordType: {},
-      selectedRecord: {}
+      selectedRecord: {},
+      params: []
     };
-    this.getLabs = this.getLabs.bind(this);
-    this.getLab = this.getLab.bind(this);
-    this.getData = this.getData.bind(this);
+    this.postLab = this.postLab.bind(this);
     this.onAcceptRequestLabMembership = this.onAcceptRequestLabMembership.bind(this);
     this.onDenyRequestLabMembership = this.onDenyRequestLabMembership.bind(this);
     this.onCancelRequestLabMembership = this.onCancelRequestLabMembership.bind(this);
     this.updateLab = this.updateLab.bind(this);
-  }
-
-  async getLabs() {
-    try {  
-      let labsRequest = new Request(`${appConfig.apiBaseUrl}/labs`, {
-        method: 'GET'
-      });
-      let labRes = await fetch(labsRequest);
-      let labsResponse = labRes.json();
-      return labsResponse;
-    } catch (error) {
-      console.log('Navigation.getLabs', error);
-    }   
-  }
-
-  async getLab(labId) {
-    try {  
-      let labRequest = new Request(`${appConfig.apiBaseUrl}/labs/${labId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let labRes = await fetch(labRequest);
-      let labResponse = labRes.json();
-      return labResponse;
-    } catch (error) {
-      console.log('Navigation.getLab', error);
-    }  
   }
 
   async postLab(lab) {
@@ -74,51 +45,10 @@ class Navigation extends Component {
     }   
   }
 
-  async getContainer(containerId) {
-    try {  
-      let request = new Request(`${appConfig.apiBaseUrl}/containers/${containerId}`, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `Bearer ${Auth.getToken()}`
-        })
-      });
-      let res = await fetch(request);
-      let response = res.json();
-      return response;
-    } catch (error) {
-      console.log('Navigation.getContainer', error);
-    }  
-  }
-
-  async getData() {
-    try {  
-      const labsRes = await this.getLabs();
-      const labs = labsRes.data;
-      console.log('labsRes', labsRes);
-      const params = String(this.props.location.pathname).split('/');
-      const hasParams = params.length > 2;
-      const type = hasParams ? params[1] === "containers" ? "Container" : "Lab" : "None";
-      const itemId = hasParams ? params[2] : null;
-      let apiRes = {};
-      if (type === "Lab") {
-        apiRes = await this.getLab(itemId);
-        console.log('getData.getLab', apiRes);
-      } else if (type === "Container") {
-        apiRes = await this.getContainer(itemId);
-        console.log('getData.getContainer', apiRes);
-      }  
-      apiRes['labs'] = labs;
-      apiRes['type'] = type;
-      return apiRes;
-    } catch (error) {
-      console.log('Navigation.getData', error);
-    }     
-  }
-
   onAcceptRequestLabMembership(e) {
     let acceptedRequestId = e.target.getAttribute('userid');
     let labId = e.target.getAttribute('labid');
-    let labs = this.state.labs;
+    let labs = this.props.labs;
     let lab;
     for(let i = 0; i < labs.length; i++){
       if (labId === labs[i]._id) {
@@ -149,7 +79,7 @@ class Navigation extends Component {
   onDenyRequestLabMembership(e) {
     let deniedRequestId = e.target.getAttribute('userid');
     let labId = e.target.getAttribute('labid');
-    let labs = this.state.labs;
+    let labs = this.props.labs;
     let lab;
     for(let i = 0; i < labs.length; i++){
       if (labId === labs[i]._id) {
@@ -175,7 +105,7 @@ class Navigation extends Component {
 
   onCancelRequestLabMembership(e) {
     let labId = e.target.getAttribute('labid');
-    let labs = this.state.labs;
+    let labs = this.props.labs;
     let lab;
     let users = []; 
     let joinRequests = [];
@@ -202,56 +132,11 @@ class Navigation extends Component {
   updateLab(lab) {
     this.postLab(lab)
     .then((res) => {
-      this.getData()
-      .then((res) => {
-        let type, labs;
-        let lab = {};
-        let selectedRecord = {};
-        if (res && res.labs && res.type && res.type === 'Lab') {
-          lab = res.data;
-          type = res.type;
-          labs = res.labs;
-        } else if (res && res.labs && res.type && res.type === 'Container') {
-          lab = res.data.lab;
-          type = res.type;
-          labs = res.labs; 
-        }
-        this.setState({
-          selectedRecordType: type,
-          selectedRecord,
-          lab,
-          labs
-        });
-        this.props.getCurrentUserLabs(this.props.currentUser);
-      });
-    });
-  }
-
-  componentDidMount() {
-    this.getData()
-    .then((res) => {
-      let lab = {};
-      let selectedRecord = {};
-      if (res.type === 'Lab') {
-        lab = res.data;
-      } else if (res.type === 'Container') {
-        lab = res.data.lab; 
-      }
-      this.setState({
-        selectedRecordType: res.type,
-        selectedRecord,
-        lab,
-        labs: res.labs
-      });
+      this.props.refresh();
     });
   }
 
   render() {
-    //let pathName = this.props.location.pathname;
-    // const params = String(this.props.location.pathname).split('/');
-    //const hasParams = params.length > 2;
-    //const type = hasParams ? params[1] === "containers" ? "Container" : "Lab" : "None";
-    // console.log('Navigation.props.match.params', type);
     const isLoggedIn = this.props.isLoggedIn;
     const currentUser = this.props.currentUser;
     const labs = this.props.labs || [];
@@ -296,7 +181,9 @@ class Navigation extends Component {
         </div>
       )
     }) : [];
+    
     const hasLabsJoined = isLoggedIn && currentUser && currentUser.labs && currentUser.labs.length > 0;
+    //console.log('nav.currentUser', currentUser);
     const labsNotJoined = isLoggedIn ? labs.map((lab, index) => {
       let labIsJoined = false;
       for(let i = 0; i < currentUser.labs.length; i++){
