@@ -11,7 +11,7 @@ import Navigation from './components/Navigation/Navigation';
 import Footer from './components/Footer/Footer';
 import Login from './components/Login';
 import Signup from './components/Signup';
-import Profile from './components/Profile';
+//import Profile from './components/Profile';
 
 const Landing = lazy(() => import('./components/Landing'));
 const About = lazy(() => import('./components/About'));
@@ -139,6 +139,15 @@ class App extends React.Component {
           }
         }
         break;
+      case 'Container':
+        let recordResponse = await Api.getOne('containers', params[2]);
+        let record = recordResponse.data;
+        console.log('App.getData.containerResponse', record);
+        let allContainerChildren = await getChildren(record);
+        record.allChildren = allContainerChildren;
+        lab = record.lab;
+        selectedRecord = record;
+        break;  
       default:
         lab = null;
     }
@@ -189,6 +198,10 @@ class App extends React.Component {
   }
 
   refresh() {
+    allChildren = {
+      containers: [],
+      physicals: []
+    };
     this.getData()
     .then((res) => {
       //console.log('App.refresh.res', res);
@@ -293,8 +306,8 @@ async function getAllChildren (record) {
 
 async function getChildren (record) {
   if (record) { 
-    console.log('getChildren', record);
-    let res = await getAllChildren(record);
+    // console.log('getChildren', record);
+    await getAllChildren(record); 
     return allChildren;
   }  
 }

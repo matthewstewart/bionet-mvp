@@ -455,21 +455,21 @@ class LabProfile extends React.Component {
             </div>
 
               <Containers 
-                labContainers={labPopulated ? this.props.lab.allChildren.containers : []}
-                labPhysicals={labPopulated ? this.props.lab.allChildren.physicals : []}
+                labContainers={labPopulated && this.props.lab.allChildren ? this.props.lab.allChildren.containers : []}
+                labPhysicals={labPopulated && this.props.lab.allChildren ? this.props.lab.allChildren.physicals : []}
                 //containers={this.state.containers}
-                containers={labPopulated ? this.props.lab.allChildren.containers : []} 
+                containers={labPopulated && this.props.lab.allChildren ? this.props.lab.allChildren.containers : []} 
                 currentUser={this.props.currentUser}
                 userIsMember={userIsMember}
                 refresh={this.props.refresh}
-                physicals={labPopulated ? this.props.lab.allChildren.physicals : []}                
+                physicals={labPopulated && this.props.lab.allChildren ? this.props.lab.allChildren.physicals : []}                
               /> 
 
               <Physicals 
-                labContainers={labPopulated ? this.props.lab.allChildren.containers : []}
-                labPhysicals={labPopulated ? this.props.lab.allChildren.physicals : []}
-                containers={labPopulated ? this.props.lab.allChildren.containers : []}  
-                physicals={labPopulated ? this.props.lab.allChildren.physicals : []} 
+                labContainers={labPopulated && this.props.lab.allChildren ? this.props.lab.allChildren.containers : []}
+                labPhysicals={labPopulated && this.props.lab.allChildren ? this.props.lab.allChildren.physicals : []}
+                containers={labPopulated && this.props.lab.allChildren ? this.props.lab.allChildren.containers : []}  
+                physicals={labPopulated && this.props.lab.allChildren ? this.props.lab.allChildren.physicals : []} 
                 currentUser={this.props.currentUser}
                 userIsMember={userIsMember}
                 refresh={this.props.refresh}

@@ -270,7 +270,7 @@ class ContainerProfile extends React.Component {
       let lab = container.lab;
       //console.log('ContainerProfile.getData.res.lab', lab);
       console.log('getContainer.res.data', res.data);
-      let physicals = res.physicals;
+      let physicals = this.props.physicals;
       this.getPath(lab._id, container._id)
       .then((res) => {
         //console.log('ContainerProfile.getPath.res', res);
@@ -424,7 +424,7 @@ class ContainerProfile extends React.Component {
   }
 
   componentDidMount() {
-    //console.log('ContainerProfile.props', this.props)
+    console.log('ContainerProfile.props', this.props)
     this.getData();
   }
 
